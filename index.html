@@ -426,7 +426,7 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
       <span data-i="tag.3">Trainer</span>
     </div>
     <div class="ctas">
-      <a class="btn primary" href="#portfolio" data-i="cta.reel">Watch the full reel →</a>
+      <a class="btn primary" id="hero-reel" href="#portfolio" data-i="cta.reel">Watch the full reel →</a>
       <a class="btn ghost" href="#book" data-i="cta.book">Book an appointment</a>
     </div>
   </div>
@@ -967,6 +967,7 @@ const PAGES={portfolio:{v:pfV,t:"Portfolio"},sessions:{v:sV,t:"1-on-1 Sessions"}
 function route(){
   let h=location.hash.slice(1);const SUB={book:["sessions","book-anchor"],films:["portfolio","pf-films"]};const sub=SUB[h];if(sub)h=sub[0];const book=!!sub;const pg=PAGES[h];
   pfV.hidden=!(pg&&pg.v===pfV);if(typeof pfShown==="function")pfShown(!pfV.hidden);sV.hidden=!(pg&&pg.v===sV);homeV.hidden=!!pg;ctaS.hidden=h==="sessions";
+  if(window._keepReel){window._keepReel=false;navState();return}
   if(typeof stopAllInline==="function")stopAllInline();
   if(pg){v.pause();if(book)requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById(sub[1]).scrollIntoView()));else scrollTo(0,0);navLinks.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+h));document.title=pg.t+" · Mohamed-Mansour Melouli"}
   else{document.title="Mohamed-Mansour Melouli";if(!matchMedia("(prefers-reduced-motion: reduce)").matches)v.play().catch(()=>{});const el=h&&document.getElementById(h);if(el)requestAnimationFrame(()=>el.scrollIntoView());else if(!h)scrollTo(0,0)}
@@ -975,6 +976,16 @@ function route(){
   requestAnimationFrame(()=>requestAnimationFrame(armReveal));
 }
 addEventListener("hashchange",route);route();
+document.getElementById("hero-reel").addEventListener("click",e=>{
+  e.preventDefault();
+  if(location.hash!=="#portfolio"){window._keepReel=false;history.pushState(null,"","#portfolio")}
+  route();
+  window._keepReel=true;setTimeout(()=>{window._keepReel=false},400);
+  if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");
+  reelInline();
+  try{rl.currentTime=0}catch(err){}
+  try{const fs=rl.requestFullscreen||rl.webkitRequestFullscreen;if(fs){const r=fs.call(rl);if(r&&r.catch)r.catch(()=>{})}else if(rl.webkitEnterFullscreen)rl.webkitEnterFullscreen()}catch(err){}
+});
 
 let saved="en";try{saved=localStorage.getItem("lang")||"en"}catch(e){}
 setLang(saved);
