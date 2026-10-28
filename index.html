@@ -780,7 +780,7 @@ function playInline(el){
 const hoverable=matchMedia("(hover:hover) and (pointer:fine)").matches;
 let pio=null;
 function startPrev(el){const v=el.querySelector("video");if(!v||el.classList.contains("active"))return;if(!v.dataset.src)setSrc(v,`media/${el.dataset.id}-p.mp4`);v.dataset.want=1;v.play().then(()=>el.classList.add("playing")).catch(()=>{})}
-function stopPrev(el){const v=el.querySelector("video");if(!v)return;if(el.classList.contains("active")){if(!hoverable)v.pause();return}delete v.dataset.want;v.pause();el.classList.remove("playing");try{v.currentTime=0}catch(e){}}
+function stopPrev(el){const v=el.querySelector("video");if(!v)return;if(el.classList.contains("active")){if(!hoverable)v.pause();return}delete v.dataset.want;v.pause()}
 function wire(grid){
   grid.querySelectorAll(".pcard[role=button]").forEach(el=>{
     el.addEventListener("click",e=>{if(el.classList.contains("active")&&e.target.tagName==="VIDEO")return;playInline(el)});
