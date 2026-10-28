@@ -221,6 +221,16 @@ section{padding-block:clamp(72px,10vw,120px)}
 .rf-btn svg{width:13px;height:13px;fill:currentColor}
 @media (max-width:520px){.rf-btn span{display:none}.rf-btn{padding:12px}}
 
+/* inline playback */
+.pcard.active .playic,.pcard.active .fmt{display:none}
+.pcard.active video{opacity:1;z-index:2;background:#000;object-fit:contain}
+.pcard.active img{opacity:0}
+.pcard.active .media{box-shadow:0 0 0 2px var(--ink-strong)}
+.pcard[role=button]{cursor:pointer}
+.reel-feature.active::after,.reel-feature.active .rf-ui{display:none}
+.reel-feature.active video{object-fit:contain;background:#000;z-index:2}
+.reel-feature.active img{opacity:0}
+
 /* show all */
 .pcard.extra{display:none}
 .show-row{display:flex;justify-content:center;margin-top:28px}
@@ -538,11 +548,11 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
   </header>
   <section class="pf-sec" id="pf-reel">
     <div class="wrap">
-      <button class="reel-feature" id="reel-feature" type="button" aria-label="Watch the showreel with sound">
+      <div class="reel-feature" id="reel-feature" role="button" tabindex="0" aria-label="Watch the showreel with sound">
         <img src="media/reel.jpg" alt="">
         <video id="reel-loop" muted loop playsinline preload="none" aria-hidden="true"></video>
         <span class="rf-ui"><span class="rf-t">Showreel</span><span class="rf-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span data-i="pf.sound">Watch with sound</span></span></span>
-      </button>
+      </div>
     </div>
   </section>
   <section class="pf-sec" id="pf-brand">
@@ -753,15 +763,28 @@ function card(p){
   const media=p.ph
    ?`<div class="media" style="background:${p.g}"><span class="fmt">${fmt}</span><span class="soon">${lang==="fr"?"Extrait bientôt":"Clip coming soon"}</span></div>`
    :`<div class="media"><img src="media/${p.id}.jpg" alt="" loading="lazy"><video muted loop playsinline preload="none" aria-hidden="true"></video><span class="fmt">${fmt}</span><span class="playic"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></span></div>`;
-  return `<${p.ph?"div":"button type=\"button\""} class="pcard ${p.f}${p.ph?" ph":""}" data-id="${p.id}" data-f="${p.f}" data-cat="${p.cat}" ${p.ph?"":`aria-label="${tx(p.t)}"`}>${media}<div><div class="t">${tx(p.t)}</div><div class="s">${sub}</div></div></${p.ph?"div":"button"}>`;
+  return `<div ${p.ph?"":"role=\"button\" tabindex=\"0\""} class="pcard ${p.f}${p.ph?" ph":""}" data-id="${p.id}" data-f="${p.f}" data-cat="${p.cat}" ${p.ph?"":`aria-label="${tx(p.t)}"`}>${media}<div><div class="t">${tx(p.t)}</div><div class="s">${sub}</div></div></div>`;
+}
+let activeCard=null;
+function stopInline(el){const v=el.querySelector("video");el.classList.remove("active","playing");if(!v)return;v.pause();v.controls=false;v.muted=true;v.loop=true;delete v.dataset.fb;setSrc(v,`media/${el.dataset.id}-p.mp4`);v.pause();try{v.currentTime=0}catch(e){}}
+function stopAllInline(){if(activeCard){stopInline(activeCard);activeCard=null}if(typeof reelReset==="function"&&typeof rf!=="undefined")reelReset()}
+function playInline(el){
+  const v=el.querySelector("video");if(!v)return;
+  if(el===activeCard){v.paused?v.play().catch(()=>{}):v.pause();return}
+  stopAllInline();activeCard=el;
+  el.classList.add("active","playing");
+  v.pause();delete v.dataset.fb;v.muted=false;v.loop=false;v.controls=true;v.dataset.want=1;
+  setSrc(v,`media/${el.dataset.id}.mp4`);v.play().catch(()=>{});
+  v.onended=()=>{};
 }
 const hoverable=matchMedia("(hover:hover) and (pointer:fine)").matches;
 let pio=null;
-function startPrev(el){const v=el.querySelector("video");if(!v)return;if(!v.dataset.src)setSrc(v,`media/${el.dataset.id}-p.mp4`);v.dataset.want=1;v.play().then(()=>el.classList.add("playing")).catch(()=>{})}
-function stopPrev(el){const v=el.querySelector("video");if(!v)return;delete v.dataset.want;v.pause();el.classList.remove("playing");try{v.currentTime=0}catch(e){}}
+function startPrev(el){const v=el.querySelector("video");if(!v||el.classList.contains("active"))return;if(!v.dataset.src)setSrc(v,`media/${el.dataset.id}-p.mp4`);v.dataset.want=1;v.play().then(()=>el.classList.add("playing")).catch(()=>{})}
+function stopPrev(el){const v=el.querySelector("video");if(!v)return;if(el.classList.contains("active")){if(!hoverable)v.pause();return}delete v.dataset.want;v.pause();el.classList.remove("playing");try{v.currentTime=0}catch(e){}}
 function wire(grid){
-  grid.querySelectorAll("button.pcard").forEach(el=>{
-    el.addEventListener("click",()=>openPlayer(el.dataset.id));
+  grid.querySelectorAll(".pcard[role=button]").forEach(el=>{
+    el.addEventListener("click",e=>{if(el.classList.contains("active")&&e.target.tagName==="VIDEO")return;playInline(el)});
+    el.addEventListener("keydown",e=>{if(e.target===el&&(e.key==="Enter"||e.key===" ")){e.preventDefault();playInline(el)}});
     if(hoverable){el.addEventListener("mouseenter",()=>startPrev(el));el.addEventListener("mouseleave",()=>stopPrev(el));el.addEventListener("focus",()=>startPrev(el));el.addEventListener("blur",()=>stopPrev(el))}
     else if(pio)pio.observe(el);
   });
@@ -788,8 +811,11 @@ function render(){
 }
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>{const el=document.getElementById(b.dataset.jump);el&&el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}));
 const rl=document.getElementById("reel-loop"),rf=document.getElementById("reel-feature");
-rf.addEventListener("click",()=>{rl.pause();openPlayer("reel")});
-function pfShown(on){if(on){if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");rl.dataset.want=1;rl.play().then(()=>rf.classList.add("playing")).catch(()=>{})}else{rl.pause();delete rl.dataset.want}}
+function reelInline(){if(rf.classList.contains("active"))return;stopAllInline();rf.classList.add("active","playing");rl.controls=true;rl.muted=false;rl.loop=false;try{rl.currentTime=0}catch(e){}rl.dataset.want=1;rl.play().catch(()=>{})}
+rf.addEventListener("click",e=>{if(e.target.tagName==="VIDEO"&&rf.classList.contains("active"))return;reelInline()});
+rf.addEventListener("keydown",e=>{if(e.target===rf&&(e.key==="Enter"||e.key===" ")){e.preventDefault();reelInline()}});
+function reelReset(){if(!rf.classList.contains("active"))return;rf.classList.remove("active");rl.controls=false;rl.muted=true;rl.loop=true}
+function pfShown(on){if(!on){reelReset();stopAllInline()}if(on){if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");rl.dataset.want=1;rl.play().then(()=>rf.classList.add("playing")).catch(()=>{})}else{rl.pause();delete rl.dataset.want}}
 const dlg=document.getElementById("player"),plv=document.getElementById("pl-video");
 function openPlayer(id){
   const p=P.find(x=>x.id===id);if(!p||p.ph)return;
@@ -899,6 +925,7 @@ const PAGES={portfolio:{v:pfV,t:"Portfolio"},sessions:{v:sV,t:"1-on-1 Sessions"}
 function route(){
   let h=location.hash.slice(1);const book=h==="book";if(book)h="sessions";const pg=PAGES[h];
   pfV.hidden=!(pg&&pg.v===pfV);if(typeof pfShown==="function")pfShown(!pfV.hidden);sV.hidden=!(pg&&pg.v===sV);homeV.hidden=!!pg;ctaS.hidden=h==="sessions";
+  if(typeof stopAllInline==="function")stopAllInline();
   if(pg){v.pause();if(book)requestAnimationFrame(()=>document.getElementById("book-anchor").scrollIntoView());else scrollTo(0,0);navLinks.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+h));document.title=pg.t+" · Mohamed-Mansour Melouli"}
   else{document.title="Mohamed-Mansour Melouli";if(!matchMedia("(prefers-reduced-motion: reduce)").matches)v.play().catch(()=>{});const el=h&&document.getElementById(h);if(el)requestAnimationFrame(()=>el.scrollIntoView());else if(!h)scrollTo(0,0)}
   navState();
