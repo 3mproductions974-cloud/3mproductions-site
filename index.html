@@ -1012,7 +1012,7 @@ function bkPick(t){if(t)bkType=t;bkRender()}
 document.querySelectorAll(".opt").forEach(o=>{o.addEventListener("click",()=>bkPick(o.dataset.type));o.addEventListener("keydown",e=>{if(e.target===o&&(e.key==="Enter"||e.key===" ")){e.preventDefault();bkPick(o.dataset.type)}})});
 document.querySelectorAll(".dur").forEach(d=>{const go=e=>{e.stopPropagation();bkDur=d.dataset.dur;bkType="session";bkRender()};d.addEventListener("click",go);d.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go(e)}})});
 document.querySelectorAll("[data-pick]").forEach(a=>a.addEventListener("click",e=>{bkPick(a.dataset.pick);if(location.hash==="#book"){e.preventDefault();document.getElementById("book-anchor").scrollIntoView({behavior:"smooth"})}}));
-const W3F_KEY="YOUR_WEB3FORMS_KEY";
+const W3F_KEY="8feec9d0-0083-4321-9d2b-3dac5e731851";
 (function(){
   const f=document.getElementById("st-form");if(!f)return;
   const tw=document.getElementById("st-time-wrap");
