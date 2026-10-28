@@ -83,6 +83,17 @@ nav:not(.solid) .links a.on{color:#d6d5dc}
 .lang button{border:0;background:none;color:inherit;padding:4px 9px;border-radius:999px;cursor:pointer;font:inherit}
 nav .lang button[aria-pressed="true"]{background:#fff;color:#1f1f24}
 nav.solid .lang button[aria-pressed="true"]{background:var(--ink-strong);color:var(--bg)}
+.menu-btn{display:none;width:40px;height:40px;border:0;background:none;color:inherit;cursor:pointer;place-content:center;gap:6px;padding:0}
+.menu-btn span{display:block;width:22px;height:2px;border-radius:2px;background:currentColor;transition:transform .25s}
+nav.open .menu-btn span:first-child{transform:translateY(4px) rotate(45deg)}
+nav.open .menu-btn span:last-child{transform:translateY(-4px) rotate(-45deg)}
+@media (max-width:860px){.menu-btn{display:grid}
+nav.open{background:var(--bg);color:var(--ink-strong);box-shadow:0 1px 0 var(--line)}
+nav.open .lang button[aria-pressed="true"]{background:var(--ink-strong);color:var(--bg)}
+nav.open .links{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;margin:0;background:var(--bg);padding:4px max(16px,env(safe-area-inset-right,0px)) 18px max(16px,env(safe-area-inset-left,0px));box-shadow:0 12px 24px rgba(0,0,0,.12);max-height:calc(100vh - 72px);overflow:auto}
+nav.open .links a{padding:15px 0;border-bottom:1px solid var(--line);font-size:15px;opacity:1;color:var(--ink-strong)}
+nav.open .links a.on{color:var(--muted);border-bottom-color:var(--line)}
+}
 @media (max-width:860px){.links{display:none}.lang{margin-left:auto}nav .wrap{height:72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
 
 section{scroll-margin-top:60px}
@@ -431,7 +442,7 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
 <nav id="nav" aria-label="Main">
   <div class="wrap">
     <a class="brand" href="#top"><span class="mark" role="img" aria-label="3MProductions"></span><span class="bt"><b>Mohamed-Mansour Melouli</b></span></a>
-    <div class="links">
+    <div class="links" id="nav-links">
       <a href="#top" class="on" data-i="nav.home">Home</a>
       <a href="#do" data-i="nav.do">What we do</a>
       <a href="#portfolio" data-i="nav.pf">Portfolio</a>
@@ -442,6 +453,7 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
       <button id="lang-en" type="button" aria-pressed="true" data-l="en">EN</button>
       <button id="lang-fr" type="button" aria-pressed="false" data-l="fr">FR</button>
     </div>
+    <button class="menu-btn" id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span></button>
   </div>
 </nav>
 
@@ -1095,6 +1107,12 @@ document.getElementById("hero-reel").addEventListener("click",e=>{
   try{rl.currentTime=0}catch(err){}
   try{const fs=rl.requestFullscreen||rl.webkitRequestFullscreen;if(fs){const r=fs.call(rl);if(r&&r.catch)r.catch(()=>{})}else if(rl.webkitEnterFullscreen)rl.webkitEnterFullscreen()}catch(err){}
 });
+const menuBtn=document.getElementById("menu-btn");
+function setMenu(open){nav.classList.toggle("open",open);menuBtn.setAttribute("aria-expanded",open);menuBtn.setAttribute("aria-label",open?"Close menu":"Menu")}
+menuBtn.addEventListener("click",()=>setMenu(!nav.classList.contains("open")));
+document.querySelectorAll("#nav-links a").forEach(a=>a.addEventListener("click",()=>setMenu(false)));
+addEventListener("hashchange",()=>setMenu(false));
+addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
 
 let saved="en";try{saved=localStorage.getItem("lang")||"en"}catch(e){}
 setLang(saved);
