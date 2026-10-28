@@ -333,6 +333,33 @@ dialog.player::backdrop{background:rgba(10,10,12,.84);backdrop-filter:blur(6px);
 .quote figcaption{display:grid;gap:2px;font-size:14px;color:var(--muted);margin-top:auto}
 .quote figcaption b{color:var(--ink-strong);font-weight:600}
 
+/* start a project */
+.st-body{padding-block:8px clamp(64px,8vw,96px)}
+.st-form,.st-done{max-width:760px;margin:0 auto;background:var(--panel);border-radius:32px;padding:clamp(22px,4vw,44px);display:grid;gap:22px}
+.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px}
+@media (max-width:620px){.st-grid{grid-template-columns:1fr}}
+.fld{display:grid;gap:8px;border:0;margin:0;padding:0;min-width:0}
+.fld label,.fld legend{font-size:14px;font-weight:600;color:var(--ink-strong);padding:0;margin-bottom:8px}
+.fld>label{margin-bottom:0}
+.fld em{font-style:normal;font-weight:400;color:var(--muted)}
+.fld input[type=text],.fld input[type=email],.fld input[type=tel],.fld textarea,.fld select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink-strong);font:400 15.5px var(--f-body)}
+.fld textarea{resize:vertical;min-height:120px}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:2px solid var(--silver);outline-offset:1px}
+.fld .bad{border-color:#d4483b}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pills label{margin:0;font-weight:500;cursor:pointer}
+.pills input{position:absolute;opacity:0;pointer-events:none}
+.pills span{display:inline-block;padding:9px 15px;border-radius:999px;background:var(--bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);font-size:14px}
+.pills input:checked+span{background:var(--ink-strong);color:var(--bg);box-shadow:none}
+.pills input:focus-visible+span{outline:2px solid var(--silver);outline-offset:2px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px}
+.st-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.st-msg{font-size:14px;color:var(--muted)}
+.st-msg.err{color:#d4483b}
+.st-done{text-align:center;justify-items:center}
+.st-done .stars{font-size:34px;color:var(--ink-strong)}
+.st-done h2{font-size:clamp(24px,3.4vw,32px);font-weight:600}
+
 /* whatsapp button */
 .wa-fab{position:fixed;z-index:40;right:calc(max(16px,env(safe-area-inset-right,0px)) + 4px);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:#25d366;color:#fff;text-decoration:none;font:600 14.5px var(--f-body);box-shadow:0 6px 20px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s}
 .wa-fab:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.22)}
@@ -633,6 +660,66 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
   </div>
 </dialog>
 
+<div id="start-view" hidden>
+  <header class="pf-head wrap">
+    <span class="label" data-i="st.l">Start a project</span>
+    <h1 data-i="cta.h">Let's make your next film.</h1>
+  </header>
+  <section class="st-body">
+    <div class="wrap">
+      <form class="st-form" id="st-form" novalidate>
+        <div class="st-grid">
+          <div class="fld"><label for="st-name" data-i="st.name">Name</label><input id="st-name" name="name" type="text" autocomplete="name" required></div>
+          <div class="fld"><label for="st-company"><span data-i="st.company">Company</span> <em data-i="st.opt">(optional)</em></label><input id="st-company" name="company" type="text" autocomplete="organization"></div>
+          <div class="fld"><label for="st-email" data-i="st.email">Email</label><input id="st-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="fld"><label for="st-phone"><span data-i="st.phone">Phone / WhatsApp</span> <em data-i="st.opt">(optional)</em></label><input id="st-phone" name="phone" type="tel" autocomplete="tel" placeholder="+974"></div>
+        </div>
+        <fieldset class="fld"><legend data-i="st.type">Project type</legend>
+          <div class="pills">
+            <label><input type="radio" name="project_type" id="pt-brand" value="Brand content"><span data-i="st.t1">Brand content</span></label>
+            <label><input type="radio" name="project_type" id="pt-com" value="Commercial"><span data-i="st.t2">Commercial</span></label>
+            <label><input type="radio" name="project_type" id="pt-event" value="Event coverage"><span data-i="st.t3">Event coverage</span></label>
+            <label><input type="radio" name="project_type" id="pt-corp" value="Corporate film"><span data-i="st.t4">Corporate film</span></label>
+            <label><input type="radio" name="project_type" id="pt-short" value="Short film"><span data-i="st.t5">Short film</span></label>
+            <label><input type="radio" name="project_type" id="pt-other" value="Other"><span data-i="st.t6">Other</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="fld"><legend><span data-i="st.budget">Budget</span> <em data-i="st.opt">(optional)</em></legend>
+          <div class="pills">
+            <label><input type="radio" name="budget" id="bg-1" value="Under 5K QAR"><span data-i="st.b1">Under 5K QAR</span></label>
+            <label><input type="radio" name="budget" id="bg-2" value="5–15K QAR"><span>5–15K QAR</span></label>
+            <label><input type="radio" name="budget" id="bg-3" value="15–50K QAR"><span>15–50K QAR</span></label>
+            <label><input type="radio" name="budget" id="bg-4" value="50K+ QAR"><span>50K+ QAR</span></label>
+            <label><input type="radio" name="budget" id="bg-5" value="Not sure yet"><span data-i="st.b5">Not sure yet</span></label>
+          </div>
+        </fieldset>
+        <div class="fld"><label for="st-date"><span data-i="st.date">Date or deadline</span> <em data-i="st.opt">(optional)</em></label><input id="st-date" name="date" type="text" data-ph="st.date.ph" placeholder="e.g. mid-December, or 15 Jan"></div>
+        <div class="fld"><label for="st-msg" data-i="st.msg">Tell us about your project</label><textarea id="st-msg" name="message" rows="5" required></textarea></div>
+        <fieldset class="fld"><legend data-i="st.how">How should we contact you?</legend>
+          <div class="pills">
+            <label><input type="radio" name="contact_pref" id="cp-email" value="Email" checked><span data-i="st.c1">Email</span></label>
+            <label><input type="radio" name="contact_pref" id="cp-call" value="Call back"><span data-i="st.c2">Call back</span></label>
+            <label><input type="radio" name="contact_pref" id="cp-wa" value="WhatsApp"><span>WhatsApp</span></label>
+          </div>
+        </fieldset>
+        <div class="fld" id="st-time-wrap" hidden><label for="st-time" data-i="st.time">Best time to call</label>
+          <select id="st-time" name="call_time"><option value="Morning" data-i="st.m1">Morning</option><option value="Afternoon" data-i="st.m2">Afternoon</option><option value="Evening" data-i="st.m3">Evening</option></select>
+        </div>
+        <input type="checkbox" name="botcheck" id="st-bot" class="hp" tabindex="-1" autocomplete="off">
+        <div class="st-actions">
+          <button class="btn primary" id="st-send" type="submit" data-i="st.send">Send request</button>
+          <p class="st-msg" id="st-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <div class="st-done" id="st-done" hidden>
+        <div class="stars" aria-hidden="true">✓</div>
+        <h2 data-i="st.thx">Thanks! We'll get back to you within 24 hours.</h2>
+        <a class="btn ghost" href="#portfolio" data-i="st.see">Meanwhile, see our work →</a>
+      </div>
+    </div>
+  </section>
+</div>
+
 <div id="sessions-view" hidden>
   <header class="pf-head wrap">
     <span class="label" data-i="s.l">1-on-1 Sessions</span>
@@ -723,7 +810,7 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
     <span class="mark" role="img" aria-label="3MProductions"></span>
     <h2 data-i="cta.h">Let's make your next film.</h2>
     <p data-i="cta.p">Commercials, short films and content, from first idea to final grade.</p>
-    <a class="btn primary" href="#contact" data-i="cta.b">Start a project</a>
+    <a class="btn primary" href="#start" data-i="cta.b">Start a project</a>
   </div>
 </section>
 
@@ -907,6 +994,28 @@ function bkPick(t){if(t)bkType=t;bkRender()}
 document.querySelectorAll(".opt").forEach(o=>{o.addEventListener("click",()=>bkPick(o.dataset.type));o.addEventListener("keydown",e=>{if(e.target===o&&(e.key==="Enter"||e.key===" ")){e.preventDefault();bkPick(o.dataset.type)}})});
 document.querySelectorAll(".dur").forEach(d=>{const go=e=>{e.stopPropagation();bkDur=d.dataset.dur;bkType="session";bkRender()};d.addEventListener("click",go);d.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go(e)}})});
 document.querySelectorAll("[data-pick]").forEach(a=>a.addEventListener("click",e=>{bkPick(a.dataset.pick);if(location.hash==="#book"){e.preventDefault();document.getElementById("book-anchor").scrollIntoView({behavior:"smooth"})}}));
+const W3F_KEY="YOUR_WEB3FORMS_KEY";
+(function(){
+  const f=document.getElementById("st-form");if(!f)return;
+  const tw=document.getElementById("st-time-wrap");
+  f.querySelectorAll('input[name=contact_pref]').forEach(r=>r.addEventListener("change",()=>{tw.hidden=val("contact_pref")!=="Call back"}));
+  const st=document.getElementById("st-status");const E=n=>f.elements.namedItem(n);const fName=E("name"),fEmail=E("email"),fPhone=E("phone"),fMsg=E("message"),fCo=E("company"),fDate=E("date"),fTime=E("call_time"),fBot=E("botcheck");const val=n=>{const x=f.elements.namedItem(n);return x&&x.value||""};
+  const fr=()=>lang==="fr";
+  f.addEventListener("submit",async e=>{
+    e.preventDefault();st.className="st-msg";st.textContent="";
+    const need=[fName,fEmail,fMsg];let ok=true;need.forEach(i=>{const bad=!i.value.trim()||(i.type==="email"&&!/^\S+@\S+\.\S+$/.test(i.value));i.classList.toggle("bad",bad);if(bad)ok=false});
+    if(val("contact_pref")!=="Email"&&!fPhone.value.trim()){fPhone.classList.add("bad");ok=false}else fPhone.classList.remove("bad");
+    if(!ok){st.className="st-msg err";st.textContent=fr()?"Merci de remplir les champs en rouge.":"Please fill in the fields in red.";return}
+    if(fBot.checked)return;
+    const data={access_key:W3F_KEY,subject:"New project request: "+fName.value.trim(),from_name:"3MProductions website",name:fName.value.trim(),email:fEmail.value.trim(),phone:fPhone.value.trim()||"-",company:fCo.value.trim()||"-",project_type:val("project_type")||"-",budget:val("budget")||"-",date:fDate.value.trim()||"-",message:fMsg.value.trim(),contact_preference:val("contact_pref"),call_time:val("contact_pref")==="Call back"?fTime.value:"-",language:lang};
+    const btn=document.getElementById("st-send");btn.disabled=true;st.textContent=fr()?"Envoi…":"Sending…";
+    try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)});const j=await r.json();
+      if(!j.success)throw new Error(j.message||"error");
+      f.hidden=true;document.getElementById("st-done").hidden=false;scrollTo(0,0);
+    }catch(err){st.className="st-msg err";st.textContent=fr()?"L'envoi n'a pas fonctionné. Écrivez-nous à 3mproductions974@gmail.com ou sur WhatsApp.":"Sending didn't work. Email us at 3mproductions974@gmail.com or message us on WhatsApp."}
+    btn.disabled=false;
+  });
+})();
 const T={fr:{
 "nav.home":"Accueil","nav.pf":"Portfolio","nav.do":"Ce que nous faisons","nav.reel":"Showreel","nav.work":"Projets","nav.sess":"Sessions 1-on-1","nav.contact":"Contact",
 "hero.h":"Nous réalisons des films.<br><span>Nous enseignons comment les faire.</span>",
@@ -924,12 +1033,12 @@ const T={fr:{
 "s.t":"Ce que vous apprendrez","t1.h":"Workflow de montage","t1.p":"De la création du projet à l'export : organiser, monter et livrer plus vite dans DaVinci Resolve.","t5.h":"Monter plus vite","t5.p":"Raccourcis clavier, modèles, proxies et presets pour gagner des heures sur chaque montage.","t6.h":"Techniques d'éclairage","t6.p":"Lumière principale, débouchage et lumière naturelle pour rendre n'importe quel lieu cinématographique.","t2.h":"Étalonnage","t2.p":"Nœuds, carnations et un look cohérent d'un plan à l'autre.","t3.h":"Appareils hybrides","t3.p":"Réglages, objectifs et profils d'image pour des images cinéma.","t4.h":"Freelance","t4.p":"Tarifs et devis, contrats et factures, relation client, et une image qui attire les clients.",
 "s.f":"Les détails","f1.k":"Format","f1.v":"En ligne ou en présentiel, Doha","f2.k":"Langues","f3.k":"Niveau","f3.v":"Débutant à avancé","f4.k":"Tarif","f4.v":"Sur demande",
 "s.btn":"Prendre rendez-vous","s.btn2":"Réserver une évaluation gratuite","hw.l":"Comment ça marche","hw.h":"Trois étapes.","hw.1h":"Réservez une évaluation gratuite","hw.1p":"15 minutes sur Google Meet pour parler de votre niveau et de ce que vous voulez apprendre.","hw.2h":"Envoyez vos images","hw.2p":"On construit la session autour de votre propre projet, pas d'un cours générique.","hw.3h":"Apprendre en pratiquant","hw.3p":"En ligne ou en présentiel à Doha, en français ou en anglais, à votre rythme.","sv.l":"Sur notre chaîne","sv.h":"Un aperçu de notre façon d'enseigner.","br.l":"Sessions individuelles","br.t":"Envie d'apprendre comment c'est fait ? Nous donnons des sessions individuelles en français et en anglais.","br.go":"Découvrir les sessions →","stat.3b":"basé au Qatar","stat.yrs":"ans d'expérience","stat.cl":"clients","s.ph":"Lien provisoire · votre page Cal.com ici",
-"c.l":"Clients","c.h":"Ils nous ont fait confiance.","c.q":"État du Qatar","c.mm":"Ministère de la Municipalité","wa.l":"WhatsApp","rv.l":"Avis Google","rv.p":"Noté 5 étoiles par nos clients sur Google.","rv.g":"Avis Google","wa.chat":"Discuter sur WhatsApp",
+"c.l":"Clients","c.h":"Ils nous ont fait confiance.","c.q":"État du Qatar","c.mm":"Ministère de la Municipalité","wa.l":"WhatsApp","st.l":"Lancer un projet","st.name":"Nom","st.company":"Société","st.opt":"(facultatif)","st.email":"E-mail","st.phone":"Téléphone / WhatsApp","st.type":"Type de projet","st.t1":"Contenu de marque","st.t2":"Publicité","st.t3":"Couverture d'événement","st.t4":"Film corporate","st.t5":"Court-métrage","st.t6":"Autre","st.budget":"Budget","st.b1":"Moins de 5K QAR","st.b5":"Pas encore défini","st.date":"Date ou échéance","st.msg":"Parlez-nous de votre projet","st.how":"Comment préférez-vous être contacté ?","st.c1":"E-mail","st.c2":"Être rappelé","st.time":"Meilleur moment pour vous appeler","st.m1":"Matin","st.m2":"Après-midi","st.m3":"Soir","st.send":"Envoyer la demande","st.thx":"Merci ! Nous vous répondons sous 24 heures.","st.see":"En attendant, découvrez nos projets →","rv.l":"Avis Google","rv.p":"Noté 5 étoiles par nos clients sur Google.","rv.g":"Avis Google","wa.chat":"Discuter sur WhatsApp",
 "cta.h":"Faisons votre prochain film.","cta.p":"Publicités, courts-métrages et contenu, de l'idée à l'étalonnage final.","cta.b":"Lancer un projet",
 "ct.l":"Contact","ct.h":"Parlons-en.","ct.f":"Suivre","ph":"Provisoire","copy":"Copier"}};
 const EN={};document.querySelectorAll("[data-i]").forEach(e=>EN[e.dataset.i]=e.innerHTML);
 let lang="en";
-function setLang(l){(()=>{const w=document.getElementById("wa-fab"),w2=document.getElementById("wa-chat");if(w2)w2.href="https://wa.me/97433236523?text="+encodeURIComponent(l==="fr"?"Bonjour, j'ai trouvé votre site et j'aimerais plus d'informations.":"Hi, I found your website and I'd like more information.");if(w)w.href="https://wa.me/97433236523?text="+encodeURIComponent(l==="fr"?"Bonjour, j'ai trouvé votre site et j'aimerais plus d'informations.":"Hi, I found your website and I'd like more information.")})();setTimeout(()=>{typeof bkRender==="function"&&bkRender();typeof armReveal==="function"&&armReveal()});lang=l;document.documentElement.lang=l;document.querySelectorAll("[data-i]").forEach(e=>{const k=e.dataset.i;e.innerHTML=(l==="fr"&&T.fr[k])?T.fr[k]:EN[k]});document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===l));render();try{localStorage.setItem("lang",l)}catch(e){}}
+function setLang(l){setTimeout(()=>{const d=document.getElementById("st-date");if(d)d.placeholder=l==="fr"?"ex. mi-décembre, ou le 15 janvier":"e.g. mid-December, or 15 Jan"});(()=>{const w=document.getElementById("wa-fab"),w2=document.getElementById("wa-chat");if(w2)w2.href="https://wa.me/97433236523?text="+encodeURIComponent(l==="fr"?"Bonjour, j'ai trouvé votre site et j'aimerais plus d'informations.":"Hi, I found your website and I'd like more information.");if(w)w.href="https://wa.me/97433236523?text="+encodeURIComponent(l==="fr"?"Bonjour, j'ai trouvé votre site et j'aimerais plus d'informations.":"Hi, I found your website and I'd like more information.")})();setTimeout(()=>{typeof bkRender==="function"&&bkRender();typeof armReveal==="function"&&armReveal()});lang=l;document.documentElement.lang=l;document.querySelectorAll("[data-i]").forEach(e=>{const k=e.dataset.i;e.innerHTML=(l==="fr"&&T.fr[k])?T.fr[k]:EN[k]});document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===l));render();try{localStorage.setItem("lang",l)}catch(e){}}
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.l)));
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>{const el=document.getElementById(b.dataset.copy);const done=()=>{const o=b.textContent;b.textContent=lang==="fr"?"Copié":"Copied";setTimeout(()=>b.textContent=o,1400)};try{navigator.clipboard.writeText(el.textContent).then(done,()=>{const r=document.createRange();r.selectNodeContents(el);getSelection().removeAllRanges();getSelection().addRange(r)})}catch(e){}}));
 const v=document.getElementById("bgvid"),vt=document.getElementById("vid-toggle");
@@ -938,7 +1047,7 @@ vt.addEventListener("click",()=>{v.paused?v.play().catch(()=>{}):v.pause();vlabe
 if(matchMedia("(prefers-reduced-motion: reduce)").matches){v.removeAttribute("autoplay");v.pause()}else{v.play().catch(()=>{})}
 vlabel();
 const nav=document.getElementById("nav"),hero=document.getElementById("top");
-const homeV=document.getElementById("home-view"),pfV=document.getElementById("pf-view"),sV=document.getElementById("sessions-view"),ctaS=document.getElementById("cta");
+const homeV=document.getElementById("home-view"),pfV=document.getElementById("pf-view"),sV=document.getElementById("sessions-view"),stV=document.getElementById("start-view"),ctaS=document.getElementById("cta");
 function navState(){nav.classList.toggle("solid",homeV.hidden||scrollY>hero.offsetHeight-90)}
 addEventListener("scroll",navState,{passive:true});navState();
 const navLinks=[...document.querySelectorAll(".links a")];
@@ -963,10 +1072,10 @@ function armReveal(){
     rvIO.observe(el);
   });
 }
-const PAGES={portfolio:{v:pfV,t:"Portfolio"},sessions:{v:sV,t:"1-on-1 Sessions"}};
+const PAGES={portfolio:{v:pfV,t:"Portfolio"},sessions:{v:sV,t:"1-on-1 Sessions"},start:{v:stV,t:"Start a project"}};
 function route(){
   let h=location.hash.slice(1);const SUB={book:["sessions","book-anchor"],films:["portfolio","pf-films"]};const sub=SUB[h];if(sub)h=sub[0];const book=!!sub;const pg=PAGES[h];
-  pfV.hidden=!(pg&&pg.v===pfV);if(typeof pfShown==="function")pfShown(!pfV.hidden);sV.hidden=!(pg&&pg.v===sV);homeV.hidden=!!pg;ctaS.hidden=h==="sessions";
+  pfV.hidden=!(pg&&pg.v===pfV);if(typeof pfShown==="function")pfShown(!pfV.hidden);sV.hidden=!(pg&&pg.v===sV);stV.hidden=!(pg&&pg.v===stV);homeV.hidden=!!pg;ctaS.hidden=h==="sessions"||h==="start";
   if(window._keepReel){window._keepReel=false;navState();return}
   if(typeof stopAllInline==="function")stopAllInline();
   if(pg){v.pause();if(book)requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById(sub[1]).scrollIntoView()));else scrollTo(0,0);navLinks.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+h));document.title=pg.t+" · Mohamed-Mansour Melouli"}
