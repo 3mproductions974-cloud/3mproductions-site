@@ -630,6 +630,7 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
         <button id="j-brand" type="button" data-jump="pf-brand" data-i="pj.brand">Brand Content</button>
         <button id="j-tut" type="button" data-jump="pf-tut" data-i="pj.tut">Tutorials</button>
         <button id="j-films" type="button" data-jump="pf-films" data-i="pj.films">Films</button>
+        <button id="j-wed" type="button" data-jump="pf-wed" data-i="pj.wed">Weddings</button>
       </div>
     </div>
   </header>
@@ -661,6 +662,13 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
       <div class="sec-h"><h2 data-i="pj.films">Films</h2><p data-i="ps.films">Short films and stories.</p></div>
       <div class="pgrid two" id="g-films"></div>
       <div class="show-row" hidden><button class="show-all" id="more-g-films" type="button" aria-controls="g-films" aria-expanded="false"></button></div>
+    </div>
+  </section>
+  <section class="pf-sec" id="pf-wed">
+    <div class="wrap">
+      <div class="sec-h"><h2 data-i="pj.wed">Weddings</h2><p data-i="ps.wed">Wedding films.</p></div>
+      <div class="pgrid two" id="g-wed"></div>
+      <div class="show-row" hidden><button class="show-all" id="more-g-wed" type="button" aria-controls="g-wed" aria-expanded="false"></button></div>
     </div>
   </section>
 </div>
@@ -885,15 +893,19 @@ const P=[
  {id:"wb",f:"v",cat:"tutorial",t:{en:"Perfect white balance",fr:"Une balance des blancs parfaite"},d:{en:"Fix white balance shot by shot in DaVinci Resolve using the scopes and colour wheels.",fr:"Corriger la balance des blancs plan par plan dans DaVinci Resolve avec les scopes et les roues chromatiques."}},
  {id:"esc",f:"v",cat:"tutorial",t:{en:"Electronic suction cup",fr:"Ventouse électronique"},d:{en:"Rig a camera on a car with an electronic suction cup for smooth, steady driving shots.",fr:"Fixer une caméra sur une voiture avec une ventouse électronique pour des plans de roulage stables."}},
  {id:"focal",f:"v",cat:"tutorial",t:{en:"Focal lengths in a car",fr:"Les focales en voiture"},d:{en:"The same car interior from 16 to 70 mm, and how each focal length changes the feel of the shot.",fr:"Le même intérieur de voiture du 16 au 70 mm, et ce que chaque focale change à l'image."}},
- {id:"empire",f:"v",cat:"brand",t:{en:"Empire Lines",fr:"Empire Lines"},n:{en:"Fashion",fr:"Mode"},c:{en:"Empire Lines",fr:"Empire Lines"}},
- {id:"gq",f:"v",cat:"brand",t:{en:"GQ",fr:"GQ"},n:{en:"Fashion",fr:"Mode"},c:{en:"GQ",fr:"GQ"}},
+ {id:"empire",f:"v",cat:"brand",t:{en:"Empire Lines",fr:"Empire Lines"},n:{en:"Fashion",fr:"Mode"}},
+ {id:"gq",f:"v",cat:"brand",t:{en:"GQ",fr:"GQ"},n:{en:"Fashion",fr:"Mode"}},
+ {id:"dg",f:"v",cat:"brand",t:{en:"Dolce & Gabbana",fr:"Dolce & Gabbana"},n:{en:"Fashion event",fr:"Événement mode"}},
+ {id:"elite",f:"v",cat:"brand",t:{en:"Elite Swim Academy",fr:"Elite Swim Academy"},n:{en:"Sport event",fr:"Événement sportif"}},
+ {id:"rgsq",f:"v",cat:"brand",t:{en:"RGSQ",fr:"RGSQ"},n:{en:"Corporate",fr:"Corporate"}},
+ {id:"wed1",f:"h",cat:"wedding",t:{en:"Film 1",fr:"Film 1"},n:{en:"Wedding",fr:"Mariage"}},
  {id:"tte",f:"h",cat:"short",ph:true,t:{en:"Through Their Eyes",fr:"Through Their Eyes"},c:{en:"IOM Qatar",fr:"OIM Qatar"},r:{en:"Director",fr:"Réalisateur"},g:"linear-gradient(135deg,#7a7a83,#2a2a2f)"},
  {id:"shots",f:"v",cat:"tutorial",t:{en:"Five shots for any car",fr:"Cinq plans pour n'importe quelle voiture"},d:{en:"Wide, low angle, close-up, high angle and profile: a simple shot list for car and product films.",fr:"Plan large, contre-plongée, gros plan, plongée et profil : une liste de plans simple pour la voiture et le produit."}},
  {id:"iced",f:"h",cat:"short",ph:true,t:{en:"(I Sleep in) an Iced Flesh of Promises",fr:"(I Sleep in) an Iced Flesh of Promises"},c:{en:"Short film",fr:"Court-métrage"},r:{en:"DP & editor",fr:"Chef op & monteur"},g:"linear-gradient(160deg,#a3a9b2,#3c4048)"}
 ];
 const HOME=["reel","empire","gq","gimbal","luma","aifocus"];
 const SESS=["luma","wb","aifocus","gimbal"];
-const CAT={brand:{en:"Brand Content",fr:"Contenu de marque"},tutorial:{en:"Tutorial",fr:"Tutoriel"},commercial:{en:"Commercial",fr:"Publicité"},short:{en:"Short film",fr:"Court-métrage"}};
+const CAT={wedding:{en:"Wedding",fr:"Mariage"},brand:{en:"Brand Content",fr:"Contenu de marque"},tutorial:{en:"Tutorial",fr:"Tutoriel"},commercial:{en:"Commercial",fr:"Publicité"},short:{en:"Short film",fr:"Court-métrage"}};
 const tx=o=>o&&(typeof o==="string"?o:o[lang]);
 
 function setSrc(v,url){v.dataset.src=url;v.onerror=()=>{if(v.dataset.fb)return;v.dataset.fb=1;fetch(url).then(r=>r.blob()).then(b=>{v.src=URL.createObjectURL(b);v.play&&v.dataset.want&&v.play().catch(()=>{})}).catch(()=>{})};v.src=url}
@@ -952,7 +964,7 @@ document.querySelectorAll(".show-all").forEach(b=>b.addEventListener("click",()=
 }));
 function render(){
   const put=(id,list)=>{const g=document.getElementById(id);g.innerHTML=list.map(card).join("");wire(g);setShort(g)};
-  put("g-brand",P.filter(p=>p.cat==="brand"));put("g-tut",P.filter(p=>p.cat==="tutorial"));put("g-films",P.filter(p=>p.cat==="short"));
+  put("g-brand",P.filter(p=>p.cat==="brand"));put("g-tut",P.filter(p=>p.cat==="tutorial"));put("g-films",P.filter(p=>p.cat==="short"));put("g-wed",P.filter(p=>p.cat==="wedding"));
   put("home-grid",HOME.map(id=>P.find(p=>p.id===id)));put("sess-grid",SESS.map(id=>P.find(p=>p.id===id)));
 }
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>{const el=document.getElementById(b.dataset.jump);el&&el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}));
@@ -1044,7 +1056,7 @@ const T={fr:{
 "p2.h":"Films","p2.p":"Publicités, courts-métrages, films corporate et d'événements, produits avec 3MProductions à Doha.","p2.a":"Réalisation et production","p2.b":"Direction de la photographie","p2.c":"Montage et étalonnage","p2.m":"Voir nos films →",
 "p3.h":"Transmettre","p3.p":"Des sessions individuelles pour les créateurs qui veulent monter plus vite, mieux étalonner et travailler avec de vrais clients.","p3.a":"En ligne ou à Doha","p3.b":"En français ou en anglais","p3.c":"Construites autour de vos images","p3.m":"Prendre rendez-vous →",
 "reel.l":"Showreel","reel.h":"Chaque image, pensée.","reel.n":"S'ouvre sur Vimeo.",
-"work.l":"Sélection","work.h":"Des images qui touchent","work.p":"Quelques projets récents. Cliquez sur une vidéo pour la regarder avec le son.","work.more":"Voir tout le portfolio →","pf.l":"Portfolio","pj.reel":"Showreel","pj.brand":"Contenu de marque","pj.tut":"Tutoriels","pj.films":"Films","ps.brand":"Du contenu pour les réseaux sociaux, créé pour nos clients.","ps.tut":"Astuces de montage, d'étalonnage et de tournage.","ps.films":"Courts-métrages et histoires.","pf.sound":"Regarder avec le son","pf.p":"Contenu vertical pour les réseaux et films horizontaux pour les marques, tournés au Qatar.","fl.all":"Tout","fl.v":"Vertical","fl.h":"Horizontal","fl.tut":"Tutoriels","fl.com":"Publicité","fl.short":"Courts-métrages","pl.client":"Client","pl.role":"Rôle","pl.format":"Format",
+"work.l":"Sélection","work.h":"Des images qui touchent","work.p":"Quelques projets récents. Cliquez sur une vidéo pour la regarder avec le son.","work.more":"Voir tout le portfolio →","pf.l":"Portfolio","pj.reel":"Showreel","pj.brand":"Contenu de marque","pj.tut":"Tutoriels","pj.films":"Films","ps.brand":"Du contenu pour les réseaux sociaux, créé pour nos clients.","ps.tut":"Astuces de montage, d'étalonnage et de tournage.","ps.films":"Courts-métrages et histoires.","pj.wed":"Mariages","ps.wed":"Films de mariage.","pf.sound":"Regarder avec le son","pf.p":"Contenu vertical pour les réseaux et films horizontaux pour les marques, tournés au Qatar.","fl.all":"Tout","fl.v":"Vertical","fl.h":"Horizontal","fl.tut":"Tutoriels","fl.com":"Publicité","fl.short":"Courts-métrages","pl.client":"Client","pl.role":"Rôle","pl.format":"Format",
 "tab.f":"Films &amp; Publicité","tab.c":"Contenu",
 "s.l":"Sessions individuelles","bk.h":"Réserver une session","bk.p":"Commencez par une évaluation gratuite, ou réservez une session directement.","bk.rec":"Première étape conseillée","bk.dir":"Réservation directe","bk.a.h":"Évaluation gratuite","bk.a.m":"15 min · Google Meet · Gratuit","bk.a.p":"Nous parlons de votre niveau, de vos objectifs et de ce que vous voulez apprendre, puis nous préparons la session adaptée.","bk.s.h":"Session individuelle","bk.s.m":"En ligne ou à Doha · FR / EN · Tarif sur demande","bk.s.p":"Une session ciblée sur vos propres images : montage, étalonnage, caméras ou freelance.","bk.pick":"Choisir un créneau","bk.custom":"Sur mesure","bk.hours":"Nombre d'heures","bk.cal.h":"Chargement du calendrier…","bk.cal.p":"S'il ne s'affiche pas, ouvrez la page de réservation dans un nouvel onglet.","bk.open":"Ouvrir la page de réservation ↗","bk.n1h":"Et ensuite","bk.n1p":"Votre réservation reste une demande jusqu'à notre confirmation. Vous recevez un e-mail dès que le rendez-vous est confirmé. Pour les sessions payantes, nous convenons d'abord du tarif, puis le paiement se fait par PayPal ou virement.","bk.n2h":"Vous préférez en parler d'abord ?","bk.n2p":"Écrivez-nous sur WhatsApp :","s.h":"Apprenez auprès de quelqu'un qui pratique","s.p":"Des sessions personnelles construites autour de vos objectifs et de vos propres images, du débutant au monteur confirmé. Venez avec un projet, repartez avec une méthode.",
 "s.t":"Ce que vous apprendrez","t1.h":"Workflow de montage","t1.p":"De la création du projet à l'export : organiser, monter et livrer plus vite dans DaVinci Resolve.","t5.h":"Monter plus vite","t5.p":"Raccourcis clavier, modèles, proxies et presets pour gagner des heures sur chaque montage.","t6.h":"Techniques d'éclairage","t6.p":"Lumière principale, débouchage et lumière naturelle pour rendre n'importe quel lieu cinématographique.","t2.h":"Étalonnage","t2.p":"Nœuds, carnations et un look cohérent d'un plan à l'autre.","t3.h":"Appareils hybrides","t3.p":"Réglages, objectifs et profils d'image pour des images cinéma.","t4.h":"Freelance","t4.p":"Tarifs et devis, contrats et factures, relation client, et une image qui attire les clients.",
