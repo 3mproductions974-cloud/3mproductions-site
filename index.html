@@ -909,7 +909,7 @@ const SESS=["luma","wb","aifocus","gimbal"];
 const CAT={wedding:{en:"Wedding",fr:"Mariage"},brand:{en:"Brand Content",fr:"Contenu de marque"},tutorial:{en:"Tutorial",fr:"Tutoriel"},commercial:{en:"Commercial",fr:"Publicité"},short:{en:"Short film",fr:"Court-métrage"}};
 const tx=o=>o&&(typeof o==="string"?o:o[lang]);
 
-function setSrc(v,url){v.dataset.src=url;v.onerror=()=>{if(v.dataset.fb)return;v.dataset.fb=1;fetch(url).then(r=>r.blob()).then(b=>{v.src=URL.createObjectURL(b);v.play&&v.dataset.want&&v.play().catch(()=>{})}).catch(()=>{})};v.src=url}
+function setSrc(v,url){v.dataset.src=url;v.onerror=()=>{if(v.dataset.fb)return;v.dataset.fb=1;fetch(url).then(r=>r.blob()).then(b=>{v.src=URL.createObjectURL(b);v.play&&v.dataset.want&&!v.dataset.up&&v.play().catch(()=>{})}).catch(()=>{})};v.src=url}
 
 function card(p){
   const fmt=p.f==="v"?"9:16":"16:9";
@@ -925,7 +925,7 @@ function pauseActive(){if(activeCard){const v=activeCard.querySelector("video");
 function stopAllInline(){pauseActive()}
 function playInline(el){
   const v=el.querySelector("video");if(!v)return;
-  if(el===activeCard){v.paused?v.play().catch(()=>{}):v.pause();return}
+  if(el===activeCard){if(v.paused){v._ok=1;v.play().catch(()=>{})}else v.pause();return}
   pauseActive();activeCard=el;
   el.classList.add("active","playing");
   v.dataset.want=1;
@@ -935,11 +935,19 @@ function playInline(el){
     v.addEventListener("play",()=>{if(activeCard!==el){pauseActive();activeCard=el;el.classList.add("active")}});
     setSrc(v,`media/${el.dataset.id}.mp4`);
   }
-  v.play().catch(()=>{});
+  v._ok=1;delete v.dataset.up;claim(v);v.play().catch(()=>{});
 }
 const hoverable=matchMedia("(hover:hover) and (pointer:fine)").matches;
+let fullV=null;const fullOn=()=>!!(fullV&&!fullV.paused);
+document.addEventListener("play",e=>{const v=e.target;if(v.tagName!=="VIDEO"||!v.controls)return;
+  if(v.dataset.up&&!v._ok&&navigator.userActivation&&!navigator.userActivation.isActive){v.pause();return}
+  v._ok=0;delete v.dataset.up;claim(v);
+},true);
+function claim(v){fullV=v;document.querySelectorAll("video").forEach(o=>{if(o===v||o.paused||o.id==="bgvid")return;o.pause();if(!o.controls){delete o.dataset.want;const c=o.closest(".pcard,.reel-feature");c&&c.classList.remove("playing")}})}
+const onStop=e=>{const v=e.target;if(v.tagName!=="VIDEO"||!v.controls)return;delete v.dataset.want;v.dataset.up=1;if(fullV===v)fullV=null};
+document.addEventListener("pause",onStop,true);document.addEventListener("ended",onStop,true);
 let pio=null;
-function startPrev(el){const v=el.querySelector("video");if(!v||el.classList.contains("loaded"))return;if(!v.dataset.src)setSrc(v,`media/${el.dataset.id}-p.mp4`);v.dataset.want=1;v.play().then(()=>el.classList.add("playing")).catch(()=>{})}
+function startPrev(el){const v=el.querySelector("video");if(!v||el.classList.contains("loaded")||fullOn())return;if(!v.dataset.src)setSrc(v,`media/${el.dataset.id}-p.mp4`);v.dataset.want=1;v.play().then(()=>el.classList.add("playing")).catch(()=>{})}
 function stopPrev(el){const v=el.querySelector("video");if(!v)return;if(el.classList.contains("loaded")){if(!hoverable)v.pause();return}delete v.dataset.want;v.pause()}
 function wire(grid){
   grid.querySelectorAll(".pcard[role=button]").forEach(el=>{
@@ -972,11 +980,11 @@ function render(){
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>{const el=document.getElementById(b.dataset.jump);el&&el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}));
 const rl=document.getElementById("reel-loop"),rf=document.getElementById("reel-feature");
 rl.addEventListener("play",()=>{if(rf.classList.contains("loaded")&&!rf.classList.contains("active")){if(activeCard){const v=activeCard.querySelector("video");v&&v.pause();activeCard.classList.remove("active");activeCard=null}rf.classList.add("active")}});
-function reelInline(){if(rf.classList.contains("active")){rl.paused?rl.play().catch(()=>{}):rl.pause();return}pauseActive();const first=!rf.classList.contains("loaded");rf.classList.add("active","loaded","playing");if(first){rl.controls=true;rl.muted=false;rl.loop=false;try{rl.currentTime=0}catch(e){}}rl.dataset.want=1;rl.play().catch(()=>{})}
+function reelInline(){if(rf.classList.contains("active")){if(rl.paused){rl._ok=1;rl.play().catch(()=>{})}else rl.pause();return}pauseActive();const first=!rf.classList.contains("loaded");rf.classList.add("active","loaded","playing");if(first){rl.controls=true;rl.muted=false;rl.loop=false;try{rl.currentTime=0}catch(e){}}rl.dataset.want=1;rl._ok=1;delete rl.dataset.up;claim(rl);rl.play().catch(()=>{})}
 rf.addEventListener("click",e=>{if(onControls(e))return;if(e.target.tagName==="VIDEO"){if(!hoverable&&rf.classList.contains("active")&&!rl.paused)return;e.preventDefault()}reelInline()});
 rf.addEventListener("keydown",e=>{if(e.target===rf&&(e.key==="Enter"||e.key===" ")){e.preventDefault();reelInline()}});
 function reelReset(){}
-function pfShown(on){if(!on){stopAllInline()}if(on&&rf.classList.contains("loaded"))return;if(on){if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");rl.dataset.want=1;rl.play().then(()=>rf.classList.add("playing")).catch(()=>{})}else{rl.pause();delete rl.dataset.want}}
+function pfShown(on){if(!on){stopAllInline()}if(on&&rf.classList.contains("loaded"))return;if(on){if(fullOn())return;if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");rl.dataset.want=1;rl.play().then(()=>rf.classList.add("playing")).catch(()=>{})}else{rl.pause();delete rl.dataset.want}}
 const dlg=document.getElementById("player"),plv=document.getElementById("pl-video");
 function openPlayer(id){
   const p=P.find(x=>x.id===id);if(!p||p.ph)return;
@@ -1123,7 +1131,7 @@ document.getElementById("hero-reel").addEventListener("click",e=>{
   route();
   window._keepReel=true;setTimeout(()=>{window._keepReel=false},400);
   if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");
-  if(rf.classList.contains("active")){rl.dataset.want=1;rl.play().catch(()=>{})}else reelInline();
+  if(rf.classList.contains("active")){rl.dataset.want=1;rl._ok=1;rl.play().catch(()=>{})}else reelInline();
   try{rl.currentTime=0}catch(err){}
   rf.scrollIntoView({block:"center"});
 });
