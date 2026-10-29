@@ -1112,8 +1112,15 @@ document.getElementById("hero-reel").addEventListener("click",e=>{
   if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");
   reelInline();
   try{rl.currentTime=0}catch(err){}
-  try{const fs=rl.requestFullscreen||rl.webkitRequestFullscreen;if(fs){const r=fs.call(rl);if(r&&r.catch)r.catch(()=>{})}else if(rl.webkitEnterFullscreen)rl.webkitEnterFullscreen()}catch(err){}
+  goFull();
 });
+function goFull(){
+  const ios=()=>{if(!rl.webkitEnterFullscreen)return;const go=()=>{try{rl.webkitEnterFullscreen()}catch(e){}};if(rl.readyState>=1)go();else rl.addEventListener("loadedmetadata",go,{once:true})};
+  const fs=rl.requestFullscreen||rl.webkitRequestFullscreen;
+  if(!fs){ios();return}
+  try{const r=fs.call(rl);if(r&&r.catch)r.catch(ios)}catch(e){ios()}
+}
+addEventListener("load",()=>setTimeout(()=>{if(!rl.dataset.src){rl.preload="metadata";setSrc(rl,"media/reel.mp4")}},1500));
 const menuBtn=document.getElementById("menu-btn");
 function setMenu(open){nav.classList.toggle("open",open);menuBtn.setAttribute("aria-expanded",open);menuBtn.setAttribute("aria-label",open?"Close menu":"Menu")}
 menuBtn.addEventListener("click",()=>setMenu(!nav.classList.contains("open")));
