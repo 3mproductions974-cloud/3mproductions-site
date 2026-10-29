@@ -957,7 +957,7 @@ function startPrev(el){const v=el.querySelector("video");if(!v||el.classList.con
 function stopPrev(el){const v=el.querySelector("video");if(!v)return;if(el.classList.contains("loaded")){if(!hoverable)v.pause();return}delete v.dataset.want;v.pause()}
 function wire(grid){
   grid.querySelectorAll(".pcard[role=button]").forEach(el=>{
-    el.addEventListener("click",e=>{if(lastT.moved&&Date.now()-lastT.t<3000)return;if(onControls(e))return;if(e.target.tagName==="VIDEO"){if(!hoverable&&el===activeCard&&!el.querySelector("video").paused)return;e.preventDefault()}playInline(el)});
+    el.addEventListener("click",e=>{if(lastT.moved&&Date.now()-lastT.t<3000)return;if(onControls(e))return;if(e.target.tagName==="VIDEO"){if(!hoverable&&el.classList.contains("loaded"))return;e.preventDefault()}playInline(el)});
     el.addEventListener("keydown",e=>{if(e.target===el&&(e.key==="Enter"||e.key===" ")){e.preventDefault();playInline(el)}});
     if(hoverable){el.addEventListener("mouseenter",()=>startPrev(el));el.addEventListener("mouseleave",()=>stopPrev(el));el.addEventListener("focus",()=>startPrev(el));el.addEventListener("blur",()=>stopPrev(el))}
     else if(pio)pio.observe(el);
@@ -987,7 +987,7 @@ document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",(
 const rl=document.getElementById("reel-loop"),rf=document.getElementById("reel-feature");
 rl.addEventListener("play",()=>{if(rf.classList.contains("loaded")&&!rf.classList.contains("active")){if(activeCard){const v=activeCard.querySelector("video");v&&v.pause();activeCard.classList.remove("active");activeCard=null}rf.classList.add("active")}});
 function reelInline(){if(rf.classList.contains("active")){if(rl.paused){rl._ok=Date.now();rl.play().catch(()=>{})}else rl.pause();return}pauseActive();const first=!rf.classList.contains("loaded");rf.classList.add("active","loaded","playing");if(first){rl.controls=true;rl.muted=false;rl.loop=false;try{rl.currentTime=0}catch(e){}}rl.dataset.want=1;rl._ok=Date.now();delete rl.dataset.up;claim(rl);rl.play().catch(()=>{})}
-rf.addEventListener("click",e=>{if(lastT.moved&&Date.now()-lastT.t<3000)return;if(onControls(e))return;if(e.target.tagName==="VIDEO"){if(!hoverable&&rf.classList.contains("active")&&!rl.paused)return;e.preventDefault()}reelInline()});
+rf.addEventListener("click",e=>{if(lastT.moved&&Date.now()-lastT.t<3000)return;if(onControls(e))return;if(e.target.tagName==="VIDEO"){if(!hoverable&&rf.classList.contains("loaded"))return;e.preventDefault()}reelInline()});
 rf.addEventListener("keydown",e=>{if(e.target===rf&&(e.key==="Enter"||e.key===" ")){e.preventDefault();reelInline()}});
 function reelReset(){}
 function pfShown(on){if(!on){stopAllInline()}if(on&&rf.classList.contains("loaded"))return;if(on){if(fullOn())return;if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");rl.dataset.want=1;rl.play().then(()=>rf.classList.add("playing")).catch(()=>{})}else{rl.pause();delete rl.dataset.want}}
