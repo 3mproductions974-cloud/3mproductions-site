@@ -462,7 +462,8 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
 
 <div id="home-view">
 <header class="hero" id="top">
-  <video id="bgvid" autoplay muted loop playsinline preload="auto" poster="media/hero.jpg" aria-hidden="true"><source src="media/hero.mp4" type="video/mp4"></video>
+  <video id="bgvid" autoplay muted loop playsinline preload="auto" aria-hidden="true" data-w="media/hero.mp4" data-wp="media/hero.jpg" data-v="media/hero-v.mp4" data-vp="media/hero-v.jpg"></video>
+  <script>(function(){var v=document.getElementById("bgvid"),q=matchMedia("(max-aspect-ratio: 4/5)"),rm=matchMedia("(prefers-reduced-motion: reduce)").matches,cur;function set(){var t=q.matches?"v":"w";if(t===cur)return;cur=t;v.poster=v.dataset[t+"p"];v.src=v.dataset[t];if(!rm){var r=v.play();r&&r.catch&&r.catch(function(){})}}set();q.addEventListener&&q.addEventListener("change",set)})()</script>
   <div class="scrim"></div>
   <div class="wrap">
     <h1 data-i="hero.h">We make films<br><span>We teach how they're made</span></h1>
