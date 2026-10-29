@@ -1110,9 +1110,9 @@ document.getElementById("hero-reel").addEventListener("click",e=>{
   route();
   window._keepReel=true;setTimeout(()=>{window._keepReel=false},400);
   if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");
-  reelInline();
+  if(rf.classList.contains("active")){rl.dataset.want=1;rl.play().catch(()=>{})}else reelInline();
   try{rl.currentTime=0}catch(err){}
-  goFull();
+  rf.scrollIntoView({block:"center"});
 });
 function goFull(){
   const ios=()=>{if(!rl.webkitEnterFullscreen)return;const go=()=>{try{rl.webkitEnterFullscreen()}catch(e){}};if(rl.readyState>=1)go();else rl.addEventListener("loadedmetadata",go,{once:true})};
