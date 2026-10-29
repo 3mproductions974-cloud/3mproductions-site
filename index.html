@@ -211,6 +211,7 @@ section{padding-block:clamp(72px,10vw,120px)}
 @media (max-width:900px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.pcard.h,.pgrid.only-h .pcard.h{grid-column:span 2}}
 .more-row{display:flex;justify-content:center;margin-top:40px}
 .home-grid .pcard.h{grid-column:span 3}
+@media (max-width:900px){.home-grid .pcard.h{grid-column:1/-1}.home-grid .pcard:nth-child(6){display:none}}
 
 /* portfolio sections */
 .pf-head{padding-bottom:20px}
