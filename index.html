@@ -972,8 +972,10 @@ function wire(grid){
     el.addEventListener("keydown",e=>{if(e.target===el&&(e.key==="Enter"||e.key===" ")){e.preventDefault();playInline(el)}});
     if(hoverable){el.addEventListener("mouseenter",()=>startPrev(el));el.addEventListener("mouseleave",()=>stopPrev(el));el.addEventListener("focus",()=>startPrev(el));el.addEventListener("blur",()=>stopPrev(el))}
     else if(pio)pio.observe(el);
+    if(offIO)offIO.observe(el);
   });
 }
+const offIO=!hoverable&&"IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)return;const v=e.target.querySelector("video");if(v&&v.controls&&!v.paused)v.pause()}),{threshold:0}):null;
 if(false&&!hoverable&&"IntersectionObserver" in window){pio=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?startPrev(e.target):stopPrev(e.target)),{threshold:.65})}
 const SHORT=4,openGrids=new Set();
 function moreLabel(g){const n=g.querySelectorAll(".pcard").length,open=openGrids.has(g.id);return open?(lang==="fr"?"Voir moins ↑":"Show less ↑"):(lang==="fr"?`Voir tout (${n}) ↓`:`Show all (${n}) ↓`)}
@@ -997,6 +999,7 @@ function render(){
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>{const el=document.getElementById(b.dataset.jump);el&&el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}));
 const rl=document.getElementById("reel-loop"),rf=document.getElementById("reel-feature");
 rl.addEventListener("play",()=>{if(rf.classList.contains("loaded")&&!rf.classList.contains("active")){if(activeCard){const v=activeCard.querySelector("video");v&&v.pause();activeCard.classList.remove("active");activeCard=null}rf.classList.add("active")}});
+if(offIO)offIO.observe(rf);
 function reelInline(){if(!rl.dataset.src)setSrc(rl,"media/reel.mp4");if(rf.classList.contains("active")){if(rl.paused){rl._ok=Date.now();rl.play().catch(()=>{})}else rl.pause();return}pauseActive();const first=!rf.classList.contains("loaded");rf.classList.add("active","loaded","playing");if(first){rl.controls=true;rl.muted=false;rl.loop=false;try{rl.currentTime=0}catch(e){}}rl.dataset.want=1;rl._ok=Date.now();delete rl.dataset.up;claim(rl);rl.play().catch(()=>{})}
 rf.addEventListener("click",e=>{if(lastT.moved&&Date.now()-lastT.t<3000)return;if(onControls(e))return;if(e.target.tagName==="VIDEO"){if(!hoverable&&rf.classList.contains("loaded"))return;e.preventDefault()}reelInline()});
 rf.addEventListener("keydown",e=>{if(e.target===rf&&(e.key==="Enter"||e.key===" ")){e.preventDefault();reelInline()}});
