@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Pullman Doha · Photo selection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--panel:#f4f4f6;--panel-2:#ebebef;--ink:#3a3a40;--ink-strong:#1f1f24;--muted:#6e6e76;--silver:#a9a8b0;--line:#e2e2e7;--accent:#1f1f24;--on-accent:#fff;--ok:#1f8f4e;--bar:rgba(255,255,255,.82);
+--f:"Geist",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;--fm:"Geist Mono",ui-monospace,Menlo,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111113;--panel:#1b1b1f;--panel-2:#242429;--ink:#e6e6ea;--ink-strong:#f7f7f9;--muted:#9a9aa3;--silver:#8f8e98;--line:#2a2a30;--accent:#f4f4f6;--on-accent:#111113;--ok:#3ccf7d;--bar:rgba(17,17,19,.82);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111113;--panel:#1b1b1f;--panel-2:#242429;--ink:#e6e6ea;--ink-strong:#f7f7f9;--muted:#9a9aa3;--silver:#8f8e98;--line:#2a2a30;--accent:#f4f4f6;--on-accent:#111113;--ok:#3ccf7d;--bar:rgba(17,17,19,.82);color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f);-webkit-font-smoothing:antialiased;padding-bottom:96px}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+.mask{display:inline-block;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+
+/* header */
+header.top{border-bottom:1px solid var(--line)}
+.lock{display:flex;align-items:center;justify-content:center;gap:clamp(14px,3vw,26px);padding:28px 0 22px;color:var(--ink-strong)}
+.lock .m3{width:62px;height:50px;--m:url(3m.png)}
+.lock .x{font:300 26px/1 var(--f);color:var(--silver)}
+.lock .tn{width:150px;height:44px;--m:url(truenorth.png)}
+.intro{text-align:center;padding:clamp(36px,6vw,64px) 0 clamp(26px,4vw,40px)}
+.label{font:500 11px/1 var(--fm);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(--ink-strong);margin:14px 0 10px}
+.intro p{max-width:640px;margin:0 auto;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:860px;margin:30px auto 0;text-align:left}
+.steps div{background:var(--panel);border-radius:16px;padding:16px 18px;font-size:14.5px}
+.steps b{display:block;color:var(--ink-strong);font-weight:600;margin-bottom:2px}
+.deadline[hidden]{display:none}
+.deadline{display:inline-block;margin-top:22px;padding:8px 14px;border-radius:999px;background:var(--panel);font-size:14px;color:var(--ink-strong)}
+@media (max-width:720px){.steps{grid-template-columns:1fr}}
+
+/* category nav */
+.cnav{position:sticky;top:0;z-index:20;background:var(--bar);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-bottom:1px solid var(--line)}
+.cnav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
+.cnav .wrap::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:7px 12px;font-size:13.5px;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.chip i{font-style:normal;font-family:var(--fm);font-size:12px;color:var(--muted);margin-left:6px}
+.chip.full{border-color:var(--ink-strong)}.chip.full i{color:var(--ink-strong)}
+
+/* sections */
+section.cat{padding:clamp(34px,5vw,56px) 0 8px;scroll-margin-top:60px}
+.ch{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.ch h2{font:600 clamp(24px,3vw,32px)/1.15 var(--f);color:var(--ink-strong);margin:0}
+.ch p{margin:4px 0 0;color:var(--muted);font-size:14.5px}
+.count{font:500 14px/1 var(--fm);padding:9px 13px;border-radius:999px;background:var(--panel);color:var(--ink-strong);white-space:nowrap}
+.count.full{background:var(--accent);color:var(--on-accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+@media (max-width:560px){.grid{grid-template-columns:1fr 1fr;gap:12px}}
+
+.card{position:relative;border-radius:18px;background:var(--panel);overflow:hidden;outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s}
+.card.sel{outline-color:var(--ink-strong)}
+.card .ph{display:block;width:100%;aspect-ratio:3/2;border:0;padding:0;background:var(--panel-2);cursor:zoom-in;position:relative}
+.card .ph img{width:100%;height:100%;object-fit:contain;display:block}
+.card .num{position:absolute;left:10px;top:10px;font:500 11px/1 var(--fm);padding:5px 7px;border-radius:6px;background:rgba(0,0,0,.45);color:#fff}
+.card .tick{position:absolute;right:10px;top:10px;display:none;align-items:center;gap:6px;font:600 12px/1 var(--f);padding:6px 9px 6px 7px;border-radius:999px;background:var(--ink-strong);color:var(--bg)}
+.card.sel .tick{display:inline-flex}
+.card .ctl{padding:10px;display:grid;gap:8px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel-2);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;border-radius:8px;padding:7px 4px;font-size:12.5px;color:var(--muted);line-height:1.15}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink-strong);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.pick{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px;font-size:14px;font-weight:500;color:var(--ink-strong)}
+.card.sel .pick{background:var(--ink-strong);color:var(--bg);border-color:var(--ink-strong)}
+.pick:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:560px){.seg button{font-size:11px;padding:7px 2px}.card .ctl{padding:8px}}
+
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px}
+.tot b{font:600 20px/1 var(--f);color:var(--ink-strong)}.tot span{color:var(--muted);font-size:14px;margin-left:6px}
+.tot .saved{display:block;font:12px/1.4 var(--fm);color:var(--muted);margin:4px 0 0}
+.btn{border:0;border-radius:999px;padding:12px 20px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:15px}
+.btn.ghost{background:var(--panel);color:var(--ink-strong)}
+
+/* dialogs */
+dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none;color:inherit}
+dialog::backdrop{background:rgba(10,10,12,.82)}
+.lb{width:100vw;height:100dvh;display:grid;grid-template-rows:auto 1fr auto;color:#f4f4f6}
+.lb .top{display:flex;justify-content:space-between;align-items:center;padding:14px clamp(14px,3vw,28px);font:500 13px/1 var(--fm)}
+.lb .x{border:0;background:rgba(255,255,255,.12);color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px;line-height:1}
+.lb .stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 56px}
+.lb .stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.lb .nav{position:absolute;top:50%;transform:translateY(-50%);border:0;background:rgba(255,255,255,.12);color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px}
+.lb .prev{left:8px}.lb .next{right:8px}
+.lb .bot{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;padding:14px 14px calc(18px + env(safe-area-inset-bottom))}
+.lb .seg{background:rgba(255,255,255,.1);width:min(440px,100%)}
+.lb .seg button{color:rgba(255,255,255,.7);font-size:13.5px;padding:9px 6px}
+.lb .seg button:disabled{opacity:.35;cursor:not-allowed}
+.seg button[aria-pressed="true"]{background:#fff;color:#111}
+.lb .pick{background:#fff;color:#111;border:0;padding:11px 22px;border-radius:999px}
+.lb .pick.on{background:#2fbf6b;color:#fff}
+@media (max-width:560px){.lb .stage{padding:0 8px}.lb .nav{display:none}}
+
+.sum{width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;background:var(--bg);color:var(--ink);border-radius:22px;padding:clamp(22px,4vw,34px)}
+.sum h3{font:600 26px/1.15 var(--f);color:var(--ink-strong);margin:0 0 6px}
+.sum .rows{margin:18px 0;border-top:1px solid var(--line)}
+.sum .row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.sum .row b{font:500 14px/1.4 var(--fm);color:var(--ink-strong)}
+.sum .row.short b{color:#c2410c}
+.sum label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
+.sum input,.sum textarea{width:100%;font:inherit;color:var(--ink-strong);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.sum textarea{min-height:84px;resize:vertical}
+.sum .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.sum .msg{margin-top:12px;font-size:14px}
+.note{font-size:13px;color:var(--muted)}
+.ex{padding-bottom:10px}.exg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.exg figure{margin:0;background:var(--panel);border-radius:18px;overflow:hidden}.exg img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+.exg figcaption{padding:12px 14px;font-size:14px;color:var(--muted)}.exg figcaption b{display:block;color:var(--ink-strong);font-weight:600}
+.exn{margin:14px 0 0}
+@media (max-width:720px){.exg{grid-template-columns:1fr}}
+footer{padding:48px 0 20px;text-align:center;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap lock">
+    <span class="mask m3" role="img" aria-label="3MProductions"></span>
+    <span class="x" aria-hidden="true">×</span>
+    <span class="mask tn" role="img" aria-label="TrueNorth"></span>
+  </div>
+</header>
+
+<div class="wrap intro">
+  <span class="label">Pullman Doha · Photography</span>
+  <h1>Photo selection</h1>
+  <p>We prepared more photos than the agreed amount in each category, so you can choose your favourites. Each photo comes in three edit styles.</p>
+  <div class="steps">
+    <div><b>1. Choose your photos</b>Pick the number agreed for each category. The counter shows how many are left.</div>
+    <div><b>2. Pick a style</b>Switch between Natural, Moody sunlight and Moody sunset, then select the version you prefer.</div>
+    <div><b>3. Send your selection</b>Your choices save on this device. Press "Review &amp; send" when you're done.</div>
+  </div>
+  <div class="deadline" id="deadline" hidden></div>
+</div>
+<section class="wrap ex" aria-label="Style examples">
+  <div class="ch"><div><h2>Style examples</h2><p>Final edits by our team, shown on one of the meeting rooms.</p></div></div>
+  <div class="exg">
+    <figure><img src="p/meetings-events/MEET01_natural_t.jpg" alt="Natural edit example"><figcaption><b>Natural</b>Clean and bright, true to the space.</figcaption></figure>
+    <figure><img src="p/meetings-events/MEET01_sunlight_t.jpg" alt="Moody sunlight edit example"><figcaption><b>Moody sunlight</b>Daylight colours with hard sunlight and shadows.</figcaption></figure>
+    <figure><img src="p/meetings-events/MEET01_sunset_t.jpg" alt="Moody sunset edit example"><figcaption><b>Moody sunset</b>Warm, golden light with deep shadows.</figcaption></figure>
+  </div>
+  <p class="note exn">On each photo below, the two moody styles are quick colour previews to help you choose. Every selected photo is then edited by hand, with the light and shadows shown in the examples above.</p>
+</section>
+
+<nav class="cnav" aria-label="Categories"><div class="wrap" id="chips"></div></nav>
+<main id="cats"></main>
+<footer class="wrap">These are watermarked previews. Final photos are delivered in full quality without watermark.<br>3MProductions × TrueNorth · Doha, Qatar</footer>
+
+<div class="bar"><div class="wrap">
+  <div class="tot"><b id="tot">0</b><span>/ <span id="totq">240</span> photos selected</span><small class="saved" id="saved"></small></div>
+  <button class="btn" id="review" type="button">Review &amp; send</button>
+</div></div>
+
+<dialog id="lb" aria-label="Photo viewer"><div class="lb">
+  <div class="top"><span id="lbinfo"></span><button class="x" id="lbx" type="button" aria-label="Close">×</button></div>
+  <div class="stage"><button class="nav prev" id="lbprev" type="button" aria-label="Previous photo">‹</button><img id="lbimg" alt=""><button class="nav next" id="lbnext" type="button" aria-label="Next photo">›</button></div>
+  <div class="bot"><div class="seg" id="lbseg"></div><button class="pick" id="lbpick" type="button">Select</button></div>
+</div></dialog>
+
+<dialog id="sum" aria-label="Review your selection"><form class="sum" id="sumform" method="dialog">
+  <h3>Review your selection</h3>
+  <p class="note" id="sumnote"></p>
+  <div class="rows" id="rows"></div>
+  <label for="f-name">Your name</label><input id="f-name" name="name" required autocomplete="name">
+  <label for="f-email">Your email</label><input id="f-email" name="email" type="email" required autocomplete="email">
+  <label for="f-note">Comments (optional)</label><textarea id="f-note" name="note" placeholder="Anything we should know about the edits"></textarea>
+  <div class="acts"><button class="btn" id="send" type="submit">Send selection</button><button class="btn ghost" id="csv" type="button">Download list</button><button class="btn ghost" id="close" type="button">Keep choosing</button></div>
+  <div class="msg" id="msg" role="status"></div>
+</form></dialog>
+
+<script>
+const CONFIG={
+  project:"Pullman Doha",
+  deadline:"",            // e.g. "Please send your selection by 20 November 2026"
+  formKey:"8feec9d0-0083-4321-9d2b-3dac5e731851",
+  styles:[["natural","Natural"],["sunlight","Moody sunlight"],["sunset","Moody sunset"]],
+  categories:[
+    ["standard-rooms","Standard Rooms","7 room categories, empty",25],
+    ["suites-penthouse","Suites & Penthouse","Superior Room, Executive Suite, Penthouse, VIP couple",50],
+    ["fb-the-junction","F&B · The Junction","Gen-Z females and business group setups",30],
+    ["fb-executive-lounge","F&B · 31st Fl. Executive Lounge","Corporate professionals on laptops",30],
+    ["fb-avenue-kids","F&B · The Avenue & Kids Area","Buffet, dining, kids setup",15],
+    ["fb-maria-garden","F&B · Maria Garden","Space only",15],
+    ["architecture-exterior","Architecture & Exterior","Dusk hero shots, lobby and reception",20],
+    ["leisure-gym","Leisure · Gym","Facility and equipment",10],
+    ["leisure-pool-echo","Leisure · Pool & Echo Cafe","VIP couple, golden hour",20],
+    ["meetings-events","Meetings & Events","Ballroom multi-setup and meeting rooms",25]
+  ]
+};
+const PHOTOS={"standard-rooms": [{"id": "DSC09980", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09981", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09982", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09983", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09984", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09985", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09986", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09987", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09988", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09989", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09990", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09991", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09992", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09993", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09994", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09995", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09996", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09997", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09998", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09999", "s": ["natural", "sunlight", "sunset"]}], "meetings-events": [{"id": "MEET01", "s": ["natural", "sunlight", "sunset"]}]};
+const KEY="pullman-selection-v1";
+const SN=Object.fromEntries(CONFIG.styles);
+let sel={}, view={};               // sel[id]={cat,style}  view[id]=style shown
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.sel)sel=s.sel}catch(e){}
+const $=id=>document.getElementById(id);
+const quota=c=>CONFIG.categories.find(x=>x[0]===c)[3];
+const countCat=c=>Object.values(sel).filter(v=>v.cat===c).length;
+const src=(c,id,s,t)=>`p/${c}/${id}_${s}${t?"_t":""}.jpg`;
+const cats=CONFIG.categories.filter(c=>(PHOTOS[c[0]]||[]).length);
+const HAS={};cats.forEach(c=>PHOTOS[c[0]]=PHOTOS[c[0]].map(p=>{HAS[p.id]=p.s;return p.id}));
+const first=id=>HAS[id][0];
+const list=[];cats.forEach(c=>PHOTOS[c[0]].forEach(id=>list.push([c[0],id])));
+
+if(CONFIG.deadline){$("deadline").textContent=CONFIG.deadline;$("deadline").hidden=false}
+$("totq").textContent=cats.reduce((a,c)=>a+c[3],0);
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify({sel,t:Date.now()}));$("saved").textContent="Saved on this device"}catch(e){$("saved").textContent=""}}
+function segHTML(id,cur){return CONFIG.styles.map(([k,n])=>{const ok=HAS[id].includes(k);return `<button type="button" data-style="${k}" aria-pressed="${k===cur}"${ok?"":" disabled title=\"Coming soon\""}>${n}</button>`}).join("")}
+
+function render(){
+  $("chips").innerHTML=cats.map(([k,n])=>`<a class="chip" href="#c-${k}" data-chip="${k}">${n}<i></i></a>`).join("");
+  $("cats").innerHTML=cats.map(([k,n,d,q])=>`<section class="cat" id="c-${k}"><div class="wrap">
+    <div class="ch"><div><h2>${n}</h2><p>${d} · choose ${q} of ${PHOTOS[k].length}</p></div><span class="count" data-count="${k}"></span></div>
+    <div class="grid">${PHOTOS[k].map((id,i)=>{const s=(sel[id]&&HAS[id].includes(sel[id].style)&&sel[id].style)||first(id);view[id]=s;return `<div class="card" data-id="${id}" data-cat="${k}">
+      <button class="ph" type="button" data-open="${id}" aria-label="Open photo ${id}"><img loading="lazy" src="${src(k,id,s,1)}" alt="${n}, photo ${i+1}"><span class="num">${id}</span><span class="tick">✓ <span class="tl"></span></span></button>
+      <div class="ctl"><div class="seg">${segHTML(id,s)}</div><button class="pick" type="button" data-pick="${id}">Select</button></div></div>`}).join("")}</div></div></section>`).join("");
+  update();
+}
+function update(){
+  let tot=0;
+  cats.forEach(([k])=>{const n=countCat(k),q=quota(k);tot+=n;
+    const full=n>=q;
+    document.querySelector(`[data-count="${k}"]`).textContent=`${n} / ${q}`;
+    document.querySelector(`[data-count="${k}"]`).classList.toggle("full",full);
+    const ch=document.querySelector(`[data-chip="${k}"]`);ch.querySelector("i").textContent=`${n}/${q}`;ch.classList.toggle("full",full);
+    document.querySelectorAll(`.card[data-cat="${k}"]`).forEach(card=>{const id=card.dataset.id,on=!!sel[id];
+      card.classList.toggle("sel",on);
+      const b=card.querySelector(".pick");b.textContent=on?"Selected ✓":(full?"Limit reached":"Select");b.disabled=!on&&full;
+      card.querySelector(".tl").textContent=on?SN[sel[id].style]:"";});
+  });
+  $("tot").textContent=tot;
+}
+function setStyle(id,s){view[id]=s;const card=document.querySelector(`.card[data-id="${id}"]`);
+  card.querySelector("img").src=src(card.dataset.cat,id,s,1);
+  card.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.style===s));
+  if(sel[id]){sel[id].style=s;save()}update();}
+function toggle(id,cat){if(sel[id])delete sel[id];else{if(countCat(cat)>=quota(cat))return;sel[id]={cat,style:view[id]||first(id)}}save();update()}
+
+document.addEventListener("click",e=>{
+  const sb=e.target.closest(".card .seg button");if(sb){setStyle(sb.closest(".card").dataset.id,sb.dataset.style);return}
+  const pb=e.target.closest("[data-pick]");if(pb){toggle(pb.dataset.pick,pb.closest(".card").dataset.cat);return}
+  const ob=e.target.closest("[data-open]");if(ob){openLB(list.findIndex(x=>x[1]===ob.dataset.open))}
+});
+
+/* lightbox */
+let li=0;
+function drawLB(){const[c,id]=list[li];const s=view[id]||first(id);
+  $("lbimg").src=src(c,id,s);$("lbimg").alt=`Photo ${id}`;
+  $("lbinfo").textContent=`${CONFIG.categories.find(x=>x[0]===c)[1]} · ${id} · ${countCat(c)}/${quota(c)} selected`;
+  $("lbseg").innerHTML=segHTML(id,s);
+  const on=!!sel[id],full=countCat(c)>=quota(c);
+  $("lbpick").textContent=on?`Selected ✓ (${SN[sel[id].style]})`:(full?"Limit reached":`Select ${SN[s]}`);$("lbpick").classList.toggle("on",on);$("lbpick").disabled=!on&&full;
+  [li-1,li+1].forEach(j=>{if(list[j]){const i=new Image();i.src=src(list[j][0],list[j][1],view[list[j][1]]||first(list[j][1]))}});}
+function openLB(i){li=i;drawLB();$("lb").showModal()}
+$("lbx").onclick=()=>$("lb").close();
+$("lbprev").onclick=()=>{if(li>0){li--;drawLB()}};$("lbnext").onclick=()=>{if(li<list.length-1){li++;drawLB()}};
+$("lbseg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;setStyle(list[li][1],b.dataset.style);drawLB()});
+$("lbpick").onclick=()=>{toggle(list[li][1],list[li][0]);drawLB()};
+$("lb").addEventListener("keydown",e=>{if(e.key==="ArrowLeft")$("lbprev").click();if(e.key==="ArrowRight")$("lbnext").click()});
+let tx=null;$("lbimg").addEventListener("touchstart",e=>{tx=e.touches[0].clientX},{passive:true});
+$("lbimg").addEventListener("touchend",e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)(d<0?$("lbnext"):$("lbprev")).click();tx=null});
+
+/* summary */
+function lines(){return cats.flatMap(([k,n])=>Object.entries(sel).filter(([,v])=>v.cat===k).map(([id,v])=>[n,id,SN[v.style]]))}
+$("review").onclick=()=>{
+  const tot=Object.keys(sel).length,need=cats.reduce((a,c)=>a+c[3],0);
+  $("sumnote").textContent=tot<need?`You've selected ${tot} of ${need} photos. You can still send now and choose the rest later.`:`All ${need} photos selected.`;
+  $("rows").innerHTML=cats.map(([k,n,,q])=>{const c=countCat(k);return `<div class="row${c<q?" short":""}"><span>${n}</span><b>${c} / ${q}</b></div>`}).join("");
+  $("msg").textContent="";$("sum").showModal();};
+$("close").onclick=()=>$("sum").close();
+$("csv").onclick=()=>{const rows=[["Category","Photo","Style"],...lines()];
+  const blob=new Blob([rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="pullman-selection.csv";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$("sumform").addEventListener("submit",async e=>{
+  e.preventDefault();const f=e.target,b=$("send");
+  const text=cats.map(([k,n,,q])=>{const L=Object.entries(sel).filter(([,v])=>v.cat===k);return `${n} (${L.length}/${q})\n`+L.map(([id,v])=>`  ${id} · ${SN[v.style]}`).join("\n")}).join("\n\n");
+  b.disabled=true;b.textContent="Sending…";
+  try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
+      body:JSON.stringify({access_key:CONFIG.formKey,subject:`${CONFIG.project} · photo selection (${Object.keys(sel).length} photos)`,from_name:"Pullman selection page",
+      name:f.elements.namedItem("name").value,email:f.elements.namedItem("email").value,comments:f.elements.namedItem("note").value,selection:text})});
+    const j=await r.json();if(!j.success)throw 0;
+    $("msg").textContent="Thank you, your selection was sent. We'll start the edits and keep you posted.";b.textContent="Sent ✓";
+  }catch(err){$("msg").textContent="Sending didn't work. Please try again, or use \"Download list\" and email it to 3mproductions974@gmail.com.";b.disabled=false;b.textContent="Send selection"}
+});
+[$("lb"),$("sum")].forEach(d=>d.addEventListener("click",e=>{if(e.target===d)d.close()}));
+render();if(Object.keys(sel).length)$("saved").textContent="Saved on this device";
+</script>
+</body>
+</html>
