@@ -320,7 +320,7 @@ $("sumform").addEventListener("submit",async e=>{
       name:f.elements.namedItem("name").value,email:f.elements.namedItem("email").value,comments:f.elements.namedItem("note").value,selection:text})});
     const j=await r.json();if(!j.success)throw 0;
     $("msg").textContent="Thank you, your selection was sent. We'll start the edits and keep you posted.";b.textContent="Sent ✓";
-  }catch(err){$("msg").textContent="Sending didn't work. Please try again, or use \"Download list\" and email it to 3mproductions974@gmail.com.";b.disabled=false;b.textContent="Send selection"}
+  }catch(err){$("msg").textContent="Sending didn't work. Please try again, or use \"Download list\" and email it to hello@3mproductions.me.";b.disabled=false;b.textContent="Send selection"}
 });
 [$("lb"),$("sum")].forEach(d=>d.addEventListener("click",e=>{if(e.target===d)d.close()}));
 render();openCat((cats.find(c=>PHOTOS[c[0]].length)||cats[0])[0],"init");if(Object.keys(sel).length)$("saved").textContent="Saved on this device";

@@ -864,7 +864,7 @@ footer .brand .mark{width:26px;height:18px;color:var(--silver);--m:url(data:imag
     <div class="contact">
       <div class="cbox">
         <span class="label" data-i="st.email">Email</span>
-        <span class="v" id="em">3mproductions974@gmail.com</span>
+        <span class="v" id="em">hello@3mproductions.me</span>
         <button id="copy-email" type="button" data-copy="em" data-i="copy">Copy</button>
       </div>
       
@@ -1071,7 +1071,7 @@ const W3F_KEY="8feec9d0-0083-4321-9d2b-3dac5e731851";
     try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)});const j=await r.json();
       if(!j.success)throw new Error(j.message||"error");
       f.hidden=true;document.getElementById("st-done").hidden=false;scrollTo(0,0);
-    }catch(err){st.className="st-msg err";st.textContent=fr()?"L'envoi n'a pas fonctionné. Écrivez-nous à 3mproductions974@gmail.com ou sur WhatsApp.":"Sending didn't work. Email us at 3mproductions974@gmail.com or message us on WhatsApp."}
+    }catch(err){st.className="st-msg err";st.textContent=fr()?"L'envoi n'a pas fonctionné. Écrivez-nous à hello@3mproductions.me ou sur WhatsApp.":"Sending didn't work. Email us at hello@3mproductions.me or message us on WhatsApp."}
     btn.disabled=false;
   });
 })();
