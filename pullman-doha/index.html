@@ -44,7 +44,14 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .chip.full{border-color:var(--ink-strong)}.chip.full i{color:var(--ink-strong)}
 
 /* sections */
-section.cat{padding:clamp(26px,4vw,40px) 0 8px;scroll-margin-top:60px}
+section.cat{scroll-margin-top:60px}
+section.cat .ch{width:100%;border:0;background:none;text-align:left;padding:20px 0;margin:0;border-bottom:1px solid var(--line);align-items:center;cursor:pointer}
+section.cat .ch:hover h2{opacity:.75}
+.cr{display:flex;align-items:center;gap:14px;flex:none}
+.chev{width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .2s}
+.ch[aria-expanded="true"] .chev{transform:rotate(-135deg) translate(-2px,-2px)}
+.body{padding:20px 0 34px}
+section.cat .ch h2{font-size:clamp(20px,2.4vw,26px)}
 .area{padding-top:clamp(40px,6vw,72px);scroll-margin-top:60px}.area .label{display:block;padding-bottom:12px;border-bottom:1px solid var(--line);color:var(--ink-strong)}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
 .ch h2{font:600 clamp(24px,3vw,32px)/1.15 var(--f);color:var(--ink-strong);margin:0}
@@ -233,10 +240,10 @@ function render(){
   let last=null;
   $("cats").innerHTML=cats.map(([k,n,d,q,g])=>{let head="";if(g!==last){last=g;const i=areas.indexOf(g);head=`<div class="wrap area" id="g-${i}"><span class="label">${g}</span></div>`}
     return head+`<section class="cat" id="c-${k}"><div class="wrap">
-    <div class="ch"><div><h2>${n}</h2><p>${d?d+" · ":""}choose ${q}${PHOTOS[k].length?" of "+PHOTOS[k].length:""}</p></div><span class="count" data-count="${k}"></span></div>
-    ${PHOTOS[k].length?"":`<p class="soon">Photos coming soon.</p>`}<div class="grid">${PHOTOS[k].map((id,i)=>{const s=(sel[id]&&HAS[id].includes(sel[id].style)&&sel[id].style)||first(id);view[id]=s;return `<div class="card" data-id="${id}" data-cat="${k}">
+    <button class="ch" type="button" data-toggle="${k}" aria-expanded="false" aria-controls="b-${k}"><div><h2>${n}</h2><p>${d?d+" · ":""}choose ${q}${PHOTOS[k].length?" of "+PHOTOS[k].length:""}</p></div><span class="cr"><span class="count" data-count="${k}"></span><span class="chev" aria-hidden="true"></span></span></button>
+    <div class="body" id="b-${k}" hidden>${PHOTOS[k].length?"":`<p class="soon">Photos coming soon.</p>`}<div class="grid">${PHOTOS[k].map((id,i)=>{const s=(sel[id]&&HAS[id].includes(sel[id].style)&&sel[id].style)||first(id);view[id]=s;return `<div class="card" data-id="${id}" data-cat="${k}">
       <button class="ph" type="button" data-open="${id}" aria-label="Open photo ${id}"><img loading="lazy" src="${src(k,id,s,1)}" alt="${n}, photo ${i+1}"><span class="num">${id}</span><span class="tick">✓ <span class="tl"></span></span></button>
-      <div class="ctl"><div class="seg">${segHTML(id,s)}</div><button class="pick" type="button" data-pick="${id}">Select</button></div></div>`}).join("")}</div></div></section>`}).join("");
+      <div class="ctl"><div class="seg">${segHTML(id,s)}</div><button class="pick" type="button" data-pick="${id}">Select</button></div></div>`}).join("")}</div></div></div></section>`}).join("");
   update();
 }
 function update(){
@@ -260,7 +267,16 @@ function setStyle(id,s){view[id]=s;const card=document.querySelector(`.card[data
   if(sel[id]){sel[id].style=s;save()}update();}
 function toggle(id,cat){if(sel[id])delete sel[id];else{if(countCat(cat)>=quota(cat))return;sel[id]={cat,style:view[id]||first(id)}}save();update()}
 
+function openCat(k,mode){   // mode: "toggle" | "open" | "init"
+  const target=document.getElementById("c-"+k);if(!target)return;
+  const wasOpen=!target.querySelector(".body").hidden;
+  document.querySelectorAll("section.cat").forEach(sec=>{const on=sec===target&&!(mode==="toggle"&&wasOpen);
+    sec.querySelector(".body").hidden=!on;sec.querySelector(".ch").setAttribute("aria-expanded",on)});
+  if(mode!=="init"&&!target.querySelector(".body").hidden)requestAnimationFrame(()=>target.scrollIntoView({behavior:"smooth",block:"start"}));
+}
 document.addEventListener("click",e=>{
+  const tg=e.target.closest("[data-toggle]");if(tg){openCat(tg.dataset.toggle,"toggle");return}
+  const chip=e.target.closest("[data-chip]");if(chip){e.preventDefault();const g=[...new Set(cats.map(c=>c[4]))][+chip.dataset.chip];const f=cats.find(c=>c[4]===g);openCat(f[0],"open");return}
   const sb=e.target.closest(".card .seg button");if(sb){setStyle(sb.closest(".card").dataset.id,sb.dataset.style);return}
   const pb=e.target.closest("[data-pick]");if(pb){toggle(pb.dataset.pick,pb.closest(".card").dataset.cat);return}
   const ob=e.target.closest("[data-open]");if(ob){openLB(list.findIndex(x=>x[1]===ob.dataset.open))}
@@ -307,7 +323,7 @@ $("sumform").addEventListener("submit",async e=>{
   }catch(err){$("msg").textContent="Sending didn't work. Please try again, or use \"Download list\" and email it to 3mproductions974@gmail.com.";b.disabled=false;b.textContent="Send selection"}
 });
 [$("lb"),$("sum")].forEach(d=>d.addEventListener("click",e=>{if(e.target===d)d.close()}));
-render();if(Object.keys(sel).length)$("saved").textContent="Saved on this device";
+render();openCat((cats.find(c=>PHOTOS[c[0]].length)||cats[0])[0],"init");if(Object.keys(sel).length)$("saved").textContent="Saved on this device";
 </script>
 </body>
 </html>
