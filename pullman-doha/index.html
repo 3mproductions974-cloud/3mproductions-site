@@ -44,7 +44,8 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .chip.full{border-color:var(--ink-strong)}.chip.full i{color:var(--ink-strong)}
 
 /* sections */
-section.cat{padding:clamp(34px,5vw,56px) 0 8px;scroll-margin-top:60px}
+section.cat{padding:clamp(26px,4vw,40px) 0 8px;scroll-margin-top:60px}
+.area{padding-top:clamp(40px,6vw,72px);scroll-margin-top:60px}.area .label{display:block;padding-bottom:12px;border-bottom:1px solid var(--line);color:var(--ink-strong)}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
 .ch h2{font:600 clamp(24px,3vw,32px)/1.15 var(--f);color:var(--ink-strong);margin:0}
 .ch p{margin:4px 0 0;color:var(--muted);font-size:14.5px}
@@ -113,6 +114,7 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 .exg figure{margin:0;background:var(--panel);border-radius:18px;overflow:hidden}.exg img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
 .exg figcaption{padding:12px 14px;font-size:14px;color:var(--muted)}.exg figcaption b{display:block;color:var(--ink-strong);font-weight:600}
 .exn{margin:14px 0 0}
+.soon{margin:0;padding:22px;border-radius:18px;background:var(--panel);color:var(--muted);text-align:center;font-size:14.5px}
 @media (max-width:720px){.exg{grid-template-columns:1fr}}
 footer{padding:48px 0 20px;text-align:center;font-size:13px;color:var(--muted)}
 </style>
@@ -140,9 +142,9 @@ footer{padding:48px 0 20px;text-align:center;font-size:13px;color:var(--muted)}
 <section class="wrap ex" aria-label="Style examples">
   <div class="ch"><div><h2>Style examples</h2><p>Final edits by our team, shown on one of the meeting rooms.</p></div></div>
   <div class="exg">
-    <figure><img src="p/meetings-events/MEET01_natural_t.jpg" alt="Natural edit example"><figcaption><b>Natural</b>Clean and bright, true to the space.</figcaption></figure>
-    <figure><img src="p/meetings-events/MEET01_sunlight_t.jpg" alt="Moody sunlight edit example"><figcaption><b>Moody sunlight</b>Daylight colours with hard sunlight and shadows.</figcaption></figure>
-    <figure><img src="p/meetings-events/MEET01_sunset_t.jpg" alt="Moody sunset edit example"><figcaption><b>Moody sunset</b>Warm, golden light with deep shadows.</figcaption></figure>
+    <figure><img src="p/meeting-rooms/MEET01_natural_t.jpg" alt="Natural edit example"><figcaption><b>Natural</b>Clean and bright, true to the space.</figcaption></figure>
+    <figure><img src="p/meeting-rooms/MEET01_sunlight_t.jpg" alt="Moody sunlight edit example"><figcaption><b>Moody sunlight</b>Daylight colours with hard sunlight and shadows.</figcaption></figure>
+    <figure><img src="p/meeting-rooms/MEET01_sunset_t.jpg" alt="Moody sunset edit example"><figcaption><b>Moody sunset</b>Warm, golden light with deep shadows.</figcaption></figure>
   </div>
   <p class="note exn">On each photo below, the two moody styles are quick colour previews to help you choose. Every selected photo is then edited by hand, with the light and shadows shown in the examples above.</p>
 </section>
@@ -179,21 +181,33 @@ const CONFIG={
   deadline:"",            // e.g. "Please send your selection by 20 November 2026"
   formKey:"8feec9d0-0083-4321-9d2b-3dac5e731851",
   styles:[["natural","Natural"],["sunlight","Moody sunlight"],["sunset","Moody sunset"]],
+  // [folder, title, description, photos to choose, area]
   categories:[
-    ["standard-rooms","Standard Rooms","7 room categories, empty",25],
-    ["suites-penthouse","Suites & Penthouse","Superior Room, Executive Suite, Penthouse, VIP couple",50],
-    ["fb-the-junction","F&B · The Junction","Gen-Z females and business group setups",30],
-    ["fb-executive-lounge","F&B · 31st Fl. Executive Lounge","Corporate professionals on laptops",30],
-    ["fb-avenue-kids","F&B · The Avenue & Kids Area","Buffet, dining, kids setup",15],
-    ["fb-maria-garden","F&B · Maria Garden","Space only",15],
-    ["architecture-exterior","Architecture & Exterior","Dusk hero shots, lobby and reception",20],
-    ["leisure-gym","Leisure · Gym","Facility and equipment",10],
-    ["leisure-pool-echo","Leisure · Pool & Echo Cafe","VIP couple, golden hour",20],
-    ["meetings-events","Meetings & Events","Ballroom multi-setup and meeting rooms",25]
+    ["r-2302","2302 · Executive Premium Deluxe","Empty room",4,"Rooms & apartments"],
+    ["r-2705","2705 · Executive Deluxe Suite","Empty room",4,"Rooms & apartments"],
+    ["r-3108","3108 · Exclusive Suite","Empty room",4,"Rooms & apartments"],
+    ["r-3707","3707 · One-bedroom apartment","Empty apartment",4,"Rooms & apartments"],
+    ["r-3902","3902 · Two-bedroom apartment","Empty apartment",4,"Rooms & apartments"],
+    ["r-4501","4501 · Three-bedroom apartment","Empty apartment",5,"Rooms & apartments"],
+    ["s-2101","2101 · Executive Suite","With couple",17,"Suites with couple"],
+    ["s-2204","2204 · Superior King","With couple",17,"Suites with couple"],
+    ["s-4602","4602 · Pullman Penthouse","With couple",16,"Suites with couple"],
+    ["ballroom","Al Thuraya Ballroom","Two setups, empty",12,"Meetings & events"],
+    ["meeting-rooms","Meeting rooms","Empty",13,"Meetings & events"],
+    ["junction-a","The Junction · Setup A","Gen-Z group: 12 with models, 2 of the place",14,"The Junction"],
+    ["junction-b","The Junction · Setup B","Business group: 12 with models, 4 of the place",16,"The Junction"],
+    ["lounge-models","31st Floor Executive Lounge","With models",20,"Executive Lounge & gym"],
+    ["lounge-details","Executive Lounge · Place & details","Empty",10,"Executive Lounge & gym"],
+    ["gym","Pullman Fit Gym","Empty",10,"Executive Lounge & gym"],
+    ["avenue-kids","The Avenue & Kids Area","Empty",15,"Restaurants & spaces"],
+    ["maria-garden","Maria Garden","Empty",15,"Restaurants & spaces"],
+    ["exterior","Exterior & architecture","",10,"Restaurants & spaces"],
+    ["lobby","Lobby & reception","",10,"Restaurants & spaces"],
+    ["pool","Pool & Echo Pool Café","Wides, lifestyle with couple, café, details, golden hour and empty wides",20,"Pool & Echo Pool Café"]
   ]
 };
-const PHOTOS={"standard-rooms": [{"id": "DSC09980", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09981", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09982", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09983", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09984", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09985", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09986", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09987", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09988", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09989", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09990", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09991", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09992", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09993", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09994", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09995", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09996", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09997", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09998", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09999", "s": ["natural", "sunlight", "sunset"]}], "meetings-events": [{"id": "MEET01", "s": ["natural", "sunlight", "sunset"]}]};
-const KEY="pullman-selection-v1";
+const PHOTOS={"s-2204": [{"id": "DSC09980", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09981", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09982", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09983", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09984", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09985", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09986", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09987", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09988", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09989", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09990", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09991", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09992", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09993", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09994", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09995", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09996", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09997", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09998", "s": ["natural", "sunlight", "sunset"]}, {"id": "DSC09999", "s": ["natural", "sunlight", "sunset"]}], "meeting-rooms": [{"id": "MEET01", "s": ["natural", "sunlight", "sunset"]}]};
+const KEY="pullman-selection-v2";
 const SN=Object.fromEntries(CONFIG.styles);
 let sel={}, view={};               // sel[id]={cat,style}  view[id]=style shown
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.sel)sel=s.sel}catch(e){}
@@ -201,7 +215,8 @@ const $=id=>document.getElementById(id);
 const quota=c=>CONFIG.categories.find(x=>x[0]===c)[3];
 const countCat=c=>Object.values(sel).filter(v=>v.cat===c).length;
 const src=(c,id,s,t)=>`p/${c}/${id}_${s}${t?"_t":""}.jpg`;
-const cats=CONFIG.categories.filter(c=>(PHOTOS[c[0]]||[]).length);
+CONFIG.categories.forEach(c=>{if(!PHOTOS[c[0]])PHOTOS[c[0]]=[]});
+const cats=CONFIG.categories;
 const HAS={};cats.forEach(c=>PHOTOS[c[0]]=PHOTOS[c[0]].map(p=>{HAS[p.id]=p.s;return p.id}));
 const first=id=>HAS[id][0];
 const list=[];cats.forEach(c=>PHOTOS[c[0]].forEach(id=>list.push([c[0],id])));
@@ -213,12 +228,15 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify({sel,t:Date.now()}))
 function segHTML(id,cur){return CONFIG.styles.map(([k,n])=>{const ok=HAS[id].includes(k);return `<button type="button" data-style="${k}" aria-pressed="${k===cur}"${ok?"":" disabled title=\"Coming soon\""}>${n}</button>`}).join("")}
 
 function render(){
-  $("chips").innerHTML=cats.map(([k,n])=>`<a class="chip" href="#c-${k}" data-chip="${k}">${n}<i></i></a>`).join("");
-  $("cats").innerHTML=cats.map(([k,n,d,q])=>`<section class="cat" id="c-${k}"><div class="wrap">
-    <div class="ch"><div><h2>${n}</h2><p>${d} · choose ${q} of ${PHOTOS[k].length}</p></div><span class="count" data-count="${k}"></span></div>
-    <div class="grid">${PHOTOS[k].map((id,i)=>{const s=(sel[id]&&HAS[id].includes(sel[id].style)&&sel[id].style)||first(id);view[id]=s;return `<div class="card" data-id="${id}" data-cat="${k}">
+  const areas=[...new Set(cats.map(c=>c[4]))];
+  $("chips").innerHTML=areas.map((g,i)=>`<a class="chip" href="#g-${i}" data-chip="${i}">${g}<i></i></a>`).join("");
+  let last=null;
+  $("cats").innerHTML=cats.map(([k,n,d,q,g])=>{let head="";if(g!==last){last=g;const i=areas.indexOf(g);head=`<div class="wrap area" id="g-${i}"><span class="label">${g}</span></div>`}
+    return head+`<section class="cat" id="c-${k}"><div class="wrap">
+    <div class="ch"><div><h2>${n}</h2><p>${d?d+" · ":""}choose ${q}${PHOTOS[k].length?" of "+PHOTOS[k].length:""}</p></div><span class="count" data-count="${k}"></span></div>
+    ${PHOTOS[k].length?"":`<p class="soon">Photos coming soon.</p>`}<div class="grid">${PHOTOS[k].map((id,i)=>{const s=(sel[id]&&HAS[id].includes(sel[id].style)&&sel[id].style)||first(id);view[id]=s;return `<div class="card" data-id="${id}" data-cat="${k}">
       <button class="ph" type="button" data-open="${id}" aria-label="Open photo ${id}"><img loading="lazy" src="${src(k,id,s,1)}" alt="${n}, photo ${i+1}"><span class="num">${id}</span><span class="tick">✓ <span class="tl"></span></span></button>
-      <div class="ctl"><div class="seg">${segHTML(id,s)}</div><button class="pick" type="button" data-pick="${id}">Select</button></div></div>`}).join("")}</div></div></section>`).join("");
+      <div class="ctl"><div class="seg">${segHTML(id,s)}</div><button class="pick" type="button" data-pick="${id}">Select</button></div></div>`}).join("")}</div></div></section>`}).join("");
   update();
 }
 function update(){
@@ -227,13 +245,14 @@ function update(){
     const full=n>=q;
     document.querySelector(`[data-count="${k}"]`).textContent=`${n} / ${q}`;
     document.querySelector(`[data-count="${k}"]`).classList.toggle("full",full);
-    const ch=document.querySelector(`[data-chip="${k}"]`);ch.querySelector("i").textContent=`${n}/${q}`;ch.classList.toggle("full",full);
     document.querySelectorAll(`.card[data-cat="${k}"]`).forEach(card=>{const id=card.dataset.id,on=!!sel[id];
       card.classList.toggle("sel",on);
       const b=card.querySelector(".pick");b.textContent=on?"Selected ✓":(full?"Limit reached":"Select");b.disabled=!on&&full;
       card.querySelector(".tl").textContent=on?SN[sel[id].style]:"";});
   });
   $("tot").textContent=tot;
+  [...new Set(cats.map(c=>c[4]))].forEach((g,i)=>{const cs=cats.filter(c=>c[4]===g);const n=cs.reduce((a,c)=>a+countCat(c[0]),0),q=cs.reduce((a,c)=>a+c[3],0);
+    const ch=document.querySelector(`[data-chip="${i}"]`);ch.querySelector("i").textContent=`${n}/${q}`;ch.classList.toggle("full",n>=q)});
 }
 function setStyle(id,s){view[id]=s;const card=document.querySelector(`.card[data-id="${id}"]`);
   card.querySelector("img").src=src(card.dataset.cat,id,s,1);
