@@ -61,6 +61,16 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .fsw button[data-st="chg"]::after{background:var(--warn)}
 .vbox video{object-fit:contain}
 .sum .fs{display:grid;gap:2px;text-align:right}
+.vrow:empty{display:none}
+.vtag{font:500 11.5px/1 var(--fm);color:var(--muted)}
+.vsel{display:inline-flex;gap:3px;padding:3px;border-radius:10px;background:var(--panel-2)}
+.vsel button{border:0;background:none;border-radius:8px;padding:6px 10px;font:500 12.5px/1 var(--fm);color:var(--muted)}
+.vsel button[aria-pressed="true"]{background:var(--bg);color:var(--ink-strong);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.vbox .new{position:absolute;right:12px;top:12px;font:600 11px/1 var(--fm);padding:6px 9px;border-radius:7px;background:#2563eb;color:#fff;letter-spacing:.02em}
+.vbox .new[hidden]{display:none}
+.old{font-size:13.5px;line-height:1.5;color:var(--ink);background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+.old[hidden]{display:none}.old b{display:block;font:500 11.5px/1.4 var(--fm);color:var(--muted);margin-bottom:2px}
+.roinfo{margin:0;font-size:13.5px;color:var(--muted)}.roinfo[hidden],.acts[hidden]{display:none}
 .tshint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
@@ -121,62 +131,81 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 const CONFIG={
   project:"Pullman Doha",
   formKey:"8feec9d0-0083-4321-9d2b-3dac5e731851",
-  // [id, title, description, 16:9 [file, poster], 9:16 [file, poster]] - files live in v/; leave "" until ready
+  // [id, title, description, {h: 16:9 versions, v: 9:16 versions}]
+  // each version: [label, file in v/, poster in v/, date]. Oldest first; the last one is shown by default.
   videos:[
-    ["v01","2302 · Executive Premium Deluxe","Empty room",["v01-hq2.mp4","v01.jpg"],["",""]],
-    ["v02","2705 · Executive Deluxe Suite","Empty room",["",""],["",""]],
-    ["v03","3108 · Exclusive Suite","Empty room",["",""],["",""]],
-    ["v04","3707 · One-bedroom apartment","Empty apartment",["",""],["",""]],
-    ["v05","3902 · Two-bedroom apartment","Empty apartment",["",""],["",""]],
-    ["v06","4501 · Three-bedroom apartment","Empty apartment",["",""],["",""]],
-    ["v07","2101 · Executive Suite","With couple",["",""],["",""]],
-    ["v08","2204 · Superior King","With couple",["",""],["",""]],
-    ["v09","4602 · Pullman Penthouse","With couple",["",""],["",""]]
-    // ,["v10","Room 10","",["",""],["",""]]   <- add when confirmed
+    ["v01","2302 · Executive Premium Deluxe","Empty room",{h:[["V1","v01-hq2.mp4","v01.jpg","10 Nov"]],v:[]}],
+    ["v02","2705 · Executive Deluxe Suite","Empty room",{h:[],v:[]}],
+    ["v03","3108 · Exclusive Suite","Empty room",{h:[],v:[]}],
+    ["v04","3707 · One-bedroom apartment","Empty apartment",{h:[],v:[]}],
+    ["v05","3902 · Two-bedroom apartment","Empty apartment",{h:[],v:[]}],
+    ["v06","4501 · Three-bedroom apartment","Empty apartment",{h:[],v:[]}],
+    ["v07","2101 · Executive Suite","With couple",{h:[],v:[]}],
+    ["v08","2204 · Superior King","With couple",{h:[],v:[]}],
+    ["v09","4602 · Pullman Penthouse","With couple",{h:[],v:[]}]
+    // ,["v10","Room 10","",{h:[],v:[]}]   <- add when confirmed
   ]
 };
-const FM=[["h","16:9"],["v","9:16"]],FI={h:3,v:4};
-const KEY="pullman-video-review-v2",$=id=>document.getElementById(id);
-let fb={},fmt={};try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.fb)fb=s.fb}catch(e){}
+const FM=[["h","16:9"],["v","9:16"]];
+const KEY="pullman-video-review-v3",$=id=>document.getElementById(id);
+let fb={};try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.fb)fb=s.fb}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({fb,t:Date.now()}));$("saved").textContent="Saved on this device"}catch(e){}}
-const V=CONFIG.videos,file=(v,f)=>v[FI[f]][0],K=(id,f)=>id+"_"+f;
-const ready=()=>V.flatMap(v=>FM.filter(([f])=>file(v,f)).map(([f])=>K(v[0],f)));
+const V=CONFIG.videos,byId=id=>V.find(x=>x[0]===id);
+const vers=(v,f)=>v[3][f]||[],latest=(v,f)=>{const a=vers(v,f);return a[a.length-1]};
+const K=(id,f,l)=>`${id}_${f}_${l}`;
+const st={};   // st[id]={f, l}  current format + version label on screen
+V.forEach(v=>{const f=vers(v,"h").length||!vers(v,"v").length?"h":"v";st[v[0]]={f,l:(latest(v,f)||[])[0]}});
 $("all").textContent=V.length*2;
-function vbox(v,f){const[src,poster]=v[FI[f]];return src?`<video controls playsinline preload="none"${poster?` poster="v/${poster}"`:""} src="v/${src}"></video>`:`<div class="ph"><i>▶</i>${f==="v"?"9:16 version coming soon":"Video coming soon"}</div>`}
-$("vgrid").innerHTML=V.map((v,i)=>{const f=file(v,"h")||!file(v,"v")?"h":"v";fmt[v[0]]=f;return `<article class="vc" data-id="${v[0]}">
-  <div class="vbox">${vbox(v,f)}<span class="num">${String(i+1).padStart(2,"0")}</span></div>
+function boxHTML(v){const s=st[v[0]],a=vers(v,s.f),x=a.find(y=>y[0]===s.l);
+  return x?`<video controls playsinline preload="none"${x[2]?` poster="v/${x[2]}"`:""} src="v/${x[1]}"></video>`:`<div class="ph"><i>▶</i>${s.f==="v"?"9:16 version coming soon":"Video coming soon"}</div>`}
+function verHTML(v){const s=st[v[0]],a=vers(v,s.f);if(a.length<2)return a.length?`<span class="vtag">${a[0][0]} · ${a[0][3]}</span>`:"";
+  return `<div class="vsel" role="group" aria-label="Version">${a.map((x,i)=>`<button type="button" data-ver="${x[0]}" aria-pressed="${x[0]===s.l}">${x[0]}${i===a.length-1?" · latest":""}</button>`).join("")}</div>`}
+function card(v,i){return `<article class="vc" data-id="${v[0]}">
+  <div class="vbox">${boxHTML(v)}<span class="num">${String(i+1).padStart(2,"0")}</span><span class="new" hidden></span></div>
   <div class="vb"><div class="vt"><div><h2>${v[1]}</h2><div class="meta">${v[2]}</div></div>
-  <div class="fsw" role="group" aria-label="Format">${FM.map(([k,n])=>`<button type="button" data-fmt="${k}" aria-pressed="${k===f}">${n}</button>`).join("")}</div></div>
+  <div class="fsw" role="group" aria-label="Format">${FM.map(([k,n])=>`<button type="button" data-fmt="${k}">${n}</button>`).join("")}</div></div>
+  <div class="vrow"></div>
+  <div class="old" hidden></div>
   <div class="acts"><button type="button" class="a-ok" data-act="ok">Approve ✓</button><button type="button" class="a-chg" data-act="chg">Request changes</button></div>
   <textarea placeholder="What should we change? e.g. 0:23 – make the logo smaller" hidden></textarea>
-  <p class="tshint" hidden>Add the time in the video so we know where.</p></div></article>`}).join("");
+  <p class="tshint" hidden>Add the time in the video so we know where.</p></div></article>`}
+$("vgrid").innerHTML=V.map(card).join("");
+const esc=t=>t.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 function draw(){
-  document.querySelectorAll(".vc").forEach(c=>{const id=c.dataset.id,f=fmt[id],v=V.find(x=>x[0]===id),has=!!file(v,f),x=fb[K(id,f)]||{};
+  document.querySelectorAll(".vc").forEach(c=>{const id=c.dataset.id,v=byId(id),s=st[id],a=vers(v,s.f),L=latest(v,s.f),isLatest=L&&s.l===L[0],x=fb[K(id,s.f,s.l)]||{};
     c.classList.toggle("ok",x.s==="ok");c.classList.toggle("chg",x.s==="chg");
-    c.querySelectorAll("[data-fmt]").forEach(b=>{const y=fb[K(id,b.dataset.fmt)]||{};b.setAttribute("aria-pressed",b.dataset.fmt===f);b.dataset.st=y.s||""});
-    c.querySelector(".a-ok").setAttribute("aria-pressed",x.s==="ok");c.querySelector(".a-chg").setAttribute("aria-pressed",x.s==="chg");
-    c.querySelectorAll(".acts button").forEach(b=>b.disabled=!has);
-    const ta=c.querySelector("textarea");ta.hidden=x.s!=="chg";c.querySelector(".tshint").hidden=x.s!=="chg";if(document.activeElement!==ta)ta.value=x.note||""});
-  $("done").textContent=Object.keys(fb).filter(k=>fb[k].s).length}
+    c.querySelectorAll("[data-fmt]").forEach(b=>{const Lb=latest(v,b.dataset.fmt),y=Lb?fb[K(id,b.dataset.fmt,Lb[0])]||{}:{};b.setAttribute("aria-pressed",b.dataset.fmt===s.f);b.dataset.st=y.s||""});
+    c.querySelector(".vrow").innerHTML=verHTML(v);
+    const nw=c.querySelector(".new");nw.hidden=!(a.length>1&&isLatest);nw.textContent=L?`${L[0]} · updated ${L[3]}`:"";
+    // notes left on earlier versions of this format
+    const prev=a.slice(0,-1).map(y=>[y[0],fb[K(id,s.f,y[0])]]).filter(([,z])=>z&&z.s==="chg"&&z.note);
+    const old=c.querySelector(".old");old.hidden=!(isLatest&&prev.length);old.innerHTML=prev.map(([l,z])=>`<b>Your notes on ${l}</b>${esc(z.note).replace(/\n/g,"<br>")}`).join("");
+    const ro=!isLatest;   // earlier versions are view-only
+    c.querySelector(".acts").hidden=ro||!L;c.querySelector(".a-ok").setAttribute("aria-pressed",x.s==="ok");c.querySelector(".a-chg").setAttribute("aria-pressed",x.s==="chg");
+    c.querySelectorAll(".acts button").forEach(b=>b.disabled=!L);
+    const ta=c.querySelector("textarea");ta.hidden=ro||x.s!=="chg";ta.readOnly=ro;c.querySelector(".tshint").hidden=ta.hidden;if(document.activeElement!==ta)ta.value=x.note||"";
+    let ex=c.querySelector(".roinfo");if(!ex){ex=document.createElement("p");ex.className="roinfo";c.querySelector(".acts").before(ex)}
+    ex.hidden=!ro;ex.textContent=ro?`You're watching an earlier version (${s.l}). Your feedback goes on the latest one.`:""});
+  $("done").textContent=V.reduce((n,v)=>n+FM.filter(([f])=>{const L=latest(v,f);return L&&fb[K(v[0],f,L[0])]&&fb[K(v[0],f,L[0])].s}).length,0)}
+function swapBox(c){const v=byId(c.dataset.id);c.querySelector(".vbox").firstElementChild.outerHTML=boxHTML(v)}
 document.addEventListener("click",e=>{
-  const fbn=e.target.closest("[data-fmt]");if(fbn){const c=fbn.closest(".vc"),id=c.dataset.id,f=fbn.dataset.fmt;if(fmt[id]===f)return;fmt[id]=f;
-    c.querySelector(".vbox").classList.toggle("vert",f==="v");c.querySelector(".vbox").innerHTML=vbox(V.find(x=>x[0]===id),f)+c.querySelector(".num").outerHTML;draw();return}
-  const b=e.target.closest("[data-act]");if(!b)return;const id=b.closest(".vc").dataset.id,k=K(id,fmt[id]);const x=fb[k]||(fb[k]={});
-  x.s=x.s===b.dataset.act?undefined:b.dataset.act;if(!x.s&&!x.note)delete fb[k];save();draw();
-  if(x.s==="chg")b.closest(".vc").querySelector("textarea").focus()});
-document.addEventListener("input",e=>{const ta=e.target.closest(".vc textarea");if(!ta)return;const id=ta.closest(".vc").dataset.id,k=K(id,fmt[id]);(fb[k]||(fb[k]={})).note=ta.value;save()});
+  const fbn=e.target.closest("[data-fmt]");if(fbn){const c=fbn.closest(".vc"),id=c.dataset.id,f=fbn.dataset.fmt;if(st[id].f===f)return;st[id]={f,l:(latest(byId(id),f)||[])[0]};swapBox(c);draw();return}
+  const vb=e.target.closest("[data-ver]");if(vb){const c=vb.closest(".vc");st[c.dataset.id].l=vb.dataset.ver;swapBox(c);draw();return}
+  const b=e.target.closest("[data-act]");if(!b)return;const c=b.closest(".vc"),id=c.dataset.id,s=st[id],k=K(id,s.f,s.l);const x=fb[k]||(fb[k]={});
+  x.s=x.s===b.dataset.act?undefined:b.dataset.act;if(!x.s&&!x.note)delete fb[k];save();draw();if(x.s==="chg")c.querySelector("textarea").focus()});
+document.addEventListener("input",e=>{const ta=e.target.closest(".vc textarea");if(!ta)return;const id=ta.closest(".vc").dataset.id,s=st[id];(fb[K(id,s.f,s.l)]||(fb[K(id,s.f,s.l)]={})).note=ta.value;save()});
 document.addEventListener("play",e=>{document.querySelectorAll("video").forEach(v=>{if(v!==e.target)v.pause()})},true);
 const ST={ok:"Approved",chg:"Changes requested"};
-const stat=(v,f)=>{const x=fb[K(v[0],f)]||{};return !file(v,f)?["no","Coming soon"]:x.s?[x.s,ST[x.s]]:["no","Not reviewed"]};
-$("review").onclick=()=>{const r=ready(),n=r.filter(k=>fb[k]&&fb[k].s).length;
-  $("sumnote").textContent=r.length?`You've reviewed ${n} of ${r.length} video${r.length>1?"s":""} available so far. You can send now and review the rest later.`:"The videos aren't ready yet. We'll let you know as soon as they are.";
-  $("rows").innerHTML=V.map(v=>`<div class="row"><span>${v[1]}</span><span class="fs">${FM.map(([f,n])=>{const s=stat(v,f);return `<b class="${s[0]}">${n} ${s[1]}</b>`}).join("")}</span></div>`).join("");
-  $("msg").textContent="";$("send").disabled=!r.length;$("sum").showModal()};
+const stat=(v,f)=>{const L=latest(v,f);if(!L)return["no","Coming soon",""];const x=fb[K(v[0],f,L[0])]||{};return x.s?[x.s,ST[x.s],L[0]]:["no","Not reviewed",L[0]]};
+$("review").onclick=()=>{const avail=V.reduce((n,v)=>n+FM.filter(([f])=>latest(v,f)).length,0),n=+$("done").textContent;
+  $("sumnote").textContent=avail?`You've reviewed ${n} of ${avail} video${avail>1?"s":""} available so far. You can send now and review the rest later.`:"The videos aren't ready yet. We'll let you know as soon as they are.";
+  $("rows").innerHTML=V.map(v=>`<div class="row"><span>${v[1]}</span><span class="fs">${FM.map(([f,n])=>{const s=stat(v,f);return `<b class="${s[0]}">${n}${s[2]?" "+s[2]:""} ${s[1]}</b>`}).join("")}</span></div>`).join("");
+  $("msg").textContent="";$("send").disabled=!avail;$("sum").showModal()};
 $("close").onclick=()=>$("sum").close();
 $("sum").addEventListener("click",e=>{if(e.target===$("sum"))$("sum").close()});
 $("sumform").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,b=$("send");
-  const text=V.map((v,i)=>`${String(i+1).padStart(2,"0")} ${v[1]}\n`+FM.map(([k,n])=>{const s=stat(v,k),x=fb[K(v[0],k)]||{};return `   ${n}: ${s[1]}${x.s==="chg"&&x.note?"\n      "+x.note.replace(/\n/g,"\n      "):""}`}).join("\n")).join("\n\n");
-  const vals=Object.values(fb),n=vals.filter(x=>x.s==="ok").length,c=vals.filter(x=>x.s==="chg").length;
+  const text=V.map((v,i)=>`${String(i+1).padStart(2,"0")} ${v[1]}\n`+FM.map(([k,n])=>{const s=stat(v,k),x=s[2]?fb[K(v[0],k,s[2])]||{}:{};return `   ${n}${s[2]?" "+s[2]:""}: ${s[1]}${x.s==="chg"&&x.note?"\n      "+x.note.replace(/\n/g,"\n      "):""}`}).join("\n")).join("\n\n");
+  let n=0,c=0;V.forEach(v=>FM.forEach(([k])=>{const s=stat(v,k);if(s[0]==="ok")n++;if(s[0]==="chg")c++}));
   b.disabled=true;b.textContent="Sending…";
   try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
       body:JSON.stringify({access_key:CONFIG.formKey,subject:`${CONFIG.project} · video feedback (${n} approved, ${c} with changes)`,from_name:"Pullman video review page",
