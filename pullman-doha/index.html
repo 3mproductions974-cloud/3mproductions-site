@@ -107,7 +107,7 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 .seg button[aria-pressed="true"]{background:#fff;color:#111}
 .lb .pick{background:#fff;color:#111;border:0;padding:11px 22px;border-radius:999px}
 .lb .pick.on{background:#2fbf6b;color:#fff}
-@media (max-width:560px){.lb .stage{padding:0 8px}.lb .nav{display:none}}
+@media (max-width:560px){.lb .stage{padding:0 8px}.lb .nav{width:48px;height:48px;font-size:28px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:2}.lb .prev{left:12px}.lb .next{right:12px}}
 
 .sum{width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;background:var(--bg);color:var(--ink);border-radius:22px;padding:clamp(22px,4vw,34px)}
 .sum h3{font:600 26px/1.15 var(--f);color:var(--ink-strong);margin:0 0 6px}
@@ -301,8 +301,8 @@ $("lbprev").onclick=()=>{if(li>lo){li--;drawLB()}};$("lbnext").onclick=()=>{if(l
 $("lbseg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;setStyle(list[li][1],b.dataset.style);drawLB()});
 $("lbpick").onclick=()=>{toggle(list[li][1],list[li][0]);drawLB()};
 $("lb").addEventListener("keydown",e=>{if(e.key==="ArrowLeft")$("lbprev").click();if(e.key==="ArrowRight")$("lbnext").click()});
-let tx=null;$("lbimg").addEventListener("touchstart",e=>{tx=e.touches[0].clientX},{passive:true});
-$("lbimg").addEventListener("touchend",e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)(d<0?$("lbnext"):$("lbprev")).click();tx=null});
+let tx=null;$("lb").querySelector(".stage").addEventListener("touchstart",e=>{tx=e.touches[0].clientX},{passive:true});
+$("lb").querySelector(".stage").addEventListener("touchend",e=>{if(tx===null||e.target.closest(".nav"))return tx=null;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>40)(d<0?$("lbnext"):$("lbprev")).click();tx=null});
 
 /* summary */
 function lines(){return cats.flatMap(([k,n])=>Object.entries(sel).filter(([,v])=>v.cat===k).map(([id,v])=>[n,id,SN[v.style]]))}
