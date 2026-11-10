@@ -24,7 +24,7 @@ header.top{border-bottom:1px solid var(--line)}
 .lock .m3{width:62px;height:50px;--m:url(3m.png)}
 .lock .x{font:300 26px/1 var(--f);color:var(--silver)}
 .lock .tn{width:150px;height:44px;--m:url(truenorth.png)}
-.intro{text-align:center;padding:clamp(36px,6vw,64px) 0 clamp(26px,4vw,40px)}
+.intro{text-align:center;padding-top:clamp(36px,6vw,64px);padding-bottom:clamp(26px,4vw,40px)}
 .label{font:500 11px/1 var(--fm);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(--ink-strong);margin:14px 0 10px}
 .intro p{max-width:640px;margin:0 auto;color:var(--muted)}
@@ -32,6 +32,7 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .steps div{background:var(--panel);border-radius:16px;padding:16px 18px;font-size:14.5px}
 .steps b{display:block;color:var(--ink-strong);font-weight:600;margin-bottom:2px}
 .deadline[hidden]{display:none}
+.galink{margin:22px 0 0}.galink a{display:inline-block;padding:10px 18px;border-radius:999px;background:var(--panel);color:var(--ink-strong);font-weight:500;font-size:15px;text-decoration:none}.galink a:hover{background:var(--panel-2)}
 .deadline{display:inline-block;margin-top:22px;padding:8px 14px;border-radius:999px;background:var(--panel);font-size:14px;color:var(--ink-strong)}
 @media (max-width:720px){.steps{grid-template-columns:1fr}}
 
@@ -141,19 +142,20 @@ footer{padding:48px 0 20px;text-align:center;font-size:13px;color:var(--muted)}
   <p>We prepared more photos than the agreed amount in each category, so you can choose your favourites. Each photo comes in three edit styles.</p>
   <div class="steps">
     <div><b>1. Choose your photos</b>Pick the number agreed for each category. The counter shows how many are left.</div>
-    <div><b>2. Pick a style</b>Switch between Natural, Moody sunlight and Moody sunset, then select the version you prefer.</div>
+    <div><b>2. Pick a style</b>Switch between Natural, Daylight and Warm, then select the version you prefer.</div>
     <div><b>3. Send your selection</b>Your choices save on this device. Press "Review &amp; send" when you're done.</div>
   </div>
   <div class="deadline" id="deadline" hidden></div>
+  <p class="galink"><a href="gallery/">View the style gallery →</a></p>
 </div>
 <section class="wrap ex" aria-label="Style examples">
   <div class="ch"><div><h2>Style examples</h2><p>Final edits by our team, shown on one of the meeting rooms.</p></div></div>
   <div class="exg">
     <figure><img src="p/meeting-rooms/MEET01_natural_t.jpg" alt="Natural edit example"><figcaption><b>Natural</b>Clean and bright, true to the space.</figcaption></figure>
-    <figure><img src="p/meeting-rooms/MEET01_sunlight_t.jpg" alt="Moody sunlight edit example"><figcaption><b>Moody sunlight</b>Daylight colours with hard sunlight and shadows.</figcaption></figure>
-    <figure><img src="p/meeting-rooms/MEET01_sunset_t.jpg" alt="Moody sunset edit example"><figcaption><b>Moody sunset</b>Warm, golden light with deep shadows.</figcaption></figure>
+    <figure><img src="p/meeting-rooms/MEET01_sunlight_t.jpg" alt="Daylight edit example"><figcaption><b>Daylight</b>Daylight colours with hard sunlight and shadows.</figcaption></figure>
+    <figure><img src="p/meeting-rooms/MEET01_sunset_t.jpg" alt="Warm edit example"><figcaption><b>Warm</b>Warm, golden light with deep shadows.</figcaption></figure>
   </div>
-  <p class="note exn">On each photo below, the two moody styles are quick colour previews to help you choose. Every selected photo is then edited by hand, with the light and shadows shown in the examples above.</p>
+  <p class="note exn">On each photo below, the Daylight and Warm styles are quick colour previews to help you choose. Every selected photo is then edited by hand, with the light and shadows shown in the examples above.</p>
 </section>
 
 <nav class="cnav" aria-label="Categories"><div class="wrap" id="chips"></div></nav>
@@ -187,7 +189,7 @@ const CONFIG={
   project:"Pullman Doha",
   deadline:"",            // e.g. "Please send your selection by 20 November 2026"
   formKey:"8feec9d0-0083-4321-9d2b-3dac5e731851",
-  styles:[["natural","Natural"],["sunlight","Moody sunlight"],["sunset","Moody sunset"]],
+  styles:[["natural","Natural"],["sunlight","Daylight"],["sunset","Warm"]],
   // [folder, title, description, photos to choose, area]
   categories:[
     ["r-2302","2302 · Executive Premium Deluxe","Empty room",4,"Rooms & apartments"],
