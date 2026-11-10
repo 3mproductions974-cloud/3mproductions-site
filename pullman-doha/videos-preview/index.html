@@ -53,6 +53,14 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .acts .a-chg[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#fff}
 .vb textarea{width:100%;font:inherit;font-size:14.5px;color:var(--ink-strong);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:84px;resize:vertical}
 .vb textarea[hidden]{display:none}
+.vt{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.fsw{display:flex;gap:3px;padding:3px;border-radius:10px;background:var(--panel-2);flex:none}
+.fsw button{border:0;background:none;border-radius:8px;padding:6px 10px;font:500 12.5px/1 var(--fm);color:var(--muted);position:relative}
+.fsw button[aria-pressed="true"]{background:var(--bg);color:var(--ink-strong);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.fsw button[data-st="ok"]::after,.fsw button[data-st="chg"]::after{content:"";position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.fsw button[data-st="chg"]::after{background:var(--warn)}
+.vbox video{object-fit:contain}
+.sum .fs{display:grid;gap:2px;text-align:right}
 .tshint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
@@ -84,10 +92,10 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 <div class="wrap intro">
   <span class="label">Pullman Doha · Video</span>
   <h1>Video review</h1>
-  <p>Here are the 10 room videos. Watch each one and let us know if it's approved or if you'd like changes.</p>
+  <p>Here are the 10 room videos, each in landscape (16:9) and vertical (9:16). Watch each one and let us know if it's approved or if you'd like changes.</p>
   <div class="steps">
     <div><b>1. Watch</b>Play each video. Use full screen and sound for the best view.</div>
-    <div><b>2. Approve or comment</b>Press "Approve", or "Request changes" and tell us what to change, with the time (e.g. 0:23).</div>
+    <div><b>2. Approve or comment</b>For each format, press "Approve", or "Request changes" and tell us what to change, with the time (e.g. 0:23).</div>
     <div><b>3. Send your feedback</b>Your notes save on this device. Press "Review &amp; send" when you're done.</div>
   </div>
 </div>
@@ -95,7 +103,7 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 <main class="wrap"><div class="vgrid" id="vgrid"></div></main>
 
 <div class="bar"><div class="wrap">
-  <div class="tot"><b id="done">0</b><span>/ <span id="all">10</span> videos reviewed</span><span class="saved" id="saved"></span></div>
+  <div class="tot"><b id="done">0</b><span>/ <span id="all">10</span> versions reviewed</span><span class="saved" id="saved"></span></div>
   <button class="btn" id="review" type="button">Review &amp; send</button>
 </div></div>
 
@@ -113,51 +121,62 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 const CONFIG={
   project:"Pullman Doha",
   formKey:"8feec9d0-0083-4321-9d2b-3dac5e731851",
-  // [id, title, description, video file (in v/), poster (in v/)] - leave file empty until the video is ready
+  // [id, title, description, 16:9 [file, poster], 9:16 [file, poster]] - files live in v/; leave "" until ready
   videos:[
-    ["v01","2302 · Executive Premium Deluxe","Empty room · 0:37","v01.mp4","v01.jpg"],
-    ["v02","2705 · Executive Deluxe Suite","Empty room","",""],
-    ["v03","3108 · Exclusive Suite","Empty room","",""],
-    ["v04","3707 · One-bedroom apartment","Empty apartment","",""],
-    ["v05","3902 · Two-bedroom apartment","Empty apartment","",""],
-    ["v06","4501 · Three-bedroom apartment","Empty apartment","",""],
-    ["v07","2101 · Executive Suite","With couple","",""],
-    ["v08","2204 · Superior King","With couple","",""],
-    ["v09","4602 · Pullman Penthouse","With couple","",""],
-    ["v10","Room 10 · to be confirmed","","",""]
+    ["v01","2302 · Executive Premium Deluxe","Empty room",["v01.mp4","v01.jpg"],["",""]],
+    ["v02","2705 · Executive Deluxe Suite","Empty room",["",""],["",""]],
+    ["v03","3108 · Exclusive Suite","Empty room",["",""],["",""]],
+    ["v04","3707 · One-bedroom apartment","Empty apartment",["",""],["",""]],
+    ["v05","3902 · Two-bedroom apartment","Empty apartment",["",""],["",""]],
+    ["v06","4501 · Three-bedroom apartment","Empty apartment",["",""],["",""]],
+    ["v07","2101 · Executive Suite","With couple",["",""],["",""]],
+    ["v08","2204 · Superior King","With couple",["",""],["",""]],
+    ["v09","4602 · Pullman Penthouse","With couple",["",""],["",""]],
+    ["v10","Room 10 · to be confirmed","",["",""],["",""]]
   ]
 };
-const KEY="pullman-video-review-v1",$=id=>document.getElementById(id);
-let fb={};try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.fb)fb=s.fb}catch(e){}
+const FM=[["h","16:9"],["v","9:16"]],FI={h:3,v:4};
+const KEY="pullman-video-review-v2",$=id=>document.getElementById(id);
+let fb={},fmt={};try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.fb)fb=s.fb}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({fb,t:Date.now()}));$("saved").textContent="Saved on this device"}catch(e){}}
-const V=CONFIG.videos;$("all").textContent=V.length;
-$("vgrid").innerHTML=V.map(([id,t,d,file,poster],i)=>`<article class="vc" data-id="${id}">
-  <div class="vbox">${file?`<video controls playsinline preload="none" ${poster?`poster="v/${poster}"`:""} src="v/${file}"></video>`:`<div class="ph"><i>▶</i>Video coming soon</div>`}<span class="num">${String(i+1).padStart(2,"0")}</span></div>
-  <div class="vb"><div><h2>${t}</h2><div class="meta">${d}</div></div>
-  <div class="acts"><button type="button" class="a-ok" data-act="ok"${file?"":" disabled"}>Approve ✓</button><button type="button" class="a-chg" data-act="chg"${file?"":" disabled"}>Request changes</button></div>
-  <textarea data-note="${id}" placeholder="What should we change? e.g. 0:23 – make the logo smaller" hidden></textarea>
-  <p class="tshint" hidden>Add the time in the video so we know where.</p></div></article>`).join("");
-function draw(){let n=0;
-  document.querySelectorAll(".vc").forEach(c=>{const f=fb[c.dataset.id]||{};c.classList.toggle("ok",f.s==="ok");c.classList.toggle("chg",f.s==="chg");
-    c.querySelector(".a-ok").setAttribute("aria-pressed",f.s==="ok");c.querySelector(".a-chg").setAttribute("aria-pressed",f.s==="chg");
-    const ta=c.querySelector("textarea");ta.hidden=f.s!=="chg";c.querySelector(".tshint").hidden=f.s!=="chg";if(document.activeElement!==ta)ta.value=f.note||"";if(f.s)n++});
-  $("done").textContent=n}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const id=b.closest(".vc").dataset.id;const f=fb[id]||(fb[id]={});
-  f.s=f.s===b.dataset.act?undefined:b.dataset.act;if(!f.s&&!f.note)delete fb[id];save();draw();
-  if(f.s==="chg")b.closest(".vc").querySelector("textarea").focus()});
-document.addEventListener("input",e=>{const ta=e.target.closest("[data-note]");if(!ta)return;(fb[ta.dataset.note]||(fb[ta.dataset.note]={})).note=ta.value;save()});
-// only one video plays at a time
+const V=CONFIG.videos,file=(v,f)=>v[FI[f]][0],K=(id,f)=>id+"_"+f;
+const ready=()=>V.flatMap(v=>FM.filter(([f])=>file(v,f)).map(([f])=>K(v[0],f)));
+$("all").textContent=V.length*2;
+function vbox(v,f){const[src,poster]=v[FI[f]];return src?`<video controls playsinline preload="none"${poster?` poster="v/${poster}"`:""} src="v/${src}"></video>`:`<div class="ph"><i>▶</i>${f==="v"?"9:16 version coming soon":"Video coming soon"}</div>`}
+$("vgrid").innerHTML=V.map((v,i)=>{const f=file(v,"h")||!file(v,"v")?"h":"v";fmt[v[0]]=f;return `<article class="vc" data-id="${v[0]}">
+  <div class="vbox">${vbox(v,f)}<span class="num">${String(i+1).padStart(2,"0")}</span></div>
+  <div class="vb"><div class="vt"><div><h2>${v[1]}</h2><div class="meta">${v[2]}</div></div>
+  <div class="fsw" role="group" aria-label="Format">${FM.map(([k,n])=>`<button type="button" data-fmt="${k}" aria-pressed="${k===f}">${n}</button>`).join("")}</div></div>
+  <div class="acts"><button type="button" class="a-ok" data-act="ok">Approve ✓</button><button type="button" class="a-chg" data-act="chg">Request changes</button></div>
+  <textarea placeholder="What should we change? e.g. 0:23 – make the logo smaller" hidden></textarea>
+  <p class="tshint" hidden>Add the time in the video so we know where.</p></div></article>`}).join("");
+function draw(){
+  document.querySelectorAll(".vc").forEach(c=>{const id=c.dataset.id,f=fmt[id],v=V.find(x=>x[0]===id),has=!!file(v,f),x=fb[K(id,f)]||{};
+    c.classList.toggle("ok",x.s==="ok");c.classList.toggle("chg",x.s==="chg");
+    c.querySelectorAll("[data-fmt]").forEach(b=>{const y=fb[K(id,b.dataset.fmt)]||{};b.setAttribute("aria-pressed",b.dataset.fmt===f);b.dataset.st=y.s||""});
+    c.querySelector(".a-ok").setAttribute("aria-pressed",x.s==="ok");c.querySelector(".a-chg").setAttribute("aria-pressed",x.s==="chg");
+    c.querySelectorAll(".acts button").forEach(b=>b.disabled=!has);
+    const ta=c.querySelector("textarea");ta.hidden=x.s!=="chg";c.querySelector(".tshint").hidden=x.s!=="chg";if(document.activeElement!==ta)ta.value=x.note||""});
+  $("done").textContent=Object.keys(fb).filter(k=>fb[k].s).length}
+document.addEventListener("click",e=>{
+  const fbn=e.target.closest("[data-fmt]");if(fbn){const c=fbn.closest(".vc"),id=c.dataset.id,f=fbn.dataset.fmt;if(fmt[id]===f)return;fmt[id]=f;
+    c.querySelector(".vbox").classList.toggle("vert",f==="v");c.querySelector(".vbox").innerHTML=vbox(V.find(x=>x[0]===id),f)+c.querySelector(".num").outerHTML;draw();return}
+  const b=e.target.closest("[data-act]");if(!b)return;const id=b.closest(".vc").dataset.id,k=K(id,fmt[id]);const x=fb[k]||(fb[k]={});
+  x.s=x.s===b.dataset.act?undefined:b.dataset.act;if(!x.s&&!x.note)delete fb[k];save();draw();
+  if(x.s==="chg")b.closest(".vc").querySelector("textarea").focus()});
+document.addEventListener("input",e=>{const ta=e.target.closest(".vc textarea");if(!ta)return;const id=ta.closest(".vc").dataset.id,k=K(id,fmt[id]);(fb[k]||(fb[k]={})).note=ta.value;save()});
 document.addEventListener("play",e=>{document.querySelectorAll("video").forEach(v=>{if(v!==e.target)v.pause()})},true);
 const ST={ok:"Approved",chg:"Changes requested"};
-$("review").onclick=()=>{const n=Object.values(fb).filter(f=>f.s).length,ready=V.filter(v=>v[3]).length;
-  $("sumnote").textContent=ready?`You've reviewed ${n} of ${ready} video${ready>1?"s":""}. You can send now and review the rest later.`:"The videos aren't ready yet. We'll let you know as soon as they are.";
-  $("rows").innerHTML=V.map(([id,t,,file])=>{const f=fb[id]||{};const s=!file?["no","Coming soon"]:f.s?[f.s,ST[f.s]]:["no","Not reviewed"];return `<div class="row"><span>${t}</span><b class="${s[0]}">${s[1]}</b></div>`}).join("");
-  $("msg").textContent="";$("send").disabled=!ready;$("sum").showModal()};
+const stat=(v,f)=>{const x=fb[K(v[0],f)]||{};return !file(v,f)?["no","Coming soon"]:x.s?[x.s,ST[x.s]]:["no","Not reviewed"]};
+$("review").onclick=()=>{const r=ready(),n=r.filter(k=>fb[k]&&fb[k].s).length;
+  $("sumnote").textContent=r.length?`You've reviewed ${n} of ${r.length} video${r.length>1?"s":""} available so far. You can send now and review the rest later.`:"The videos aren't ready yet. We'll let you know as soon as they are.";
+  $("rows").innerHTML=V.map(v=>`<div class="row"><span>${v[1]}</span><span class="fs">${FM.map(([f,n])=>{const s=stat(v,f);return `<b class="${s[0]}">${n} ${s[1]}</b>`}).join("")}</span></div>`).join("");
+  $("msg").textContent="";$("send").disabled=!r.length;$("sum").showModal()};
 $("close").onclick=()=>$("sum").close();
 $("sum").addEventListener("click",e=>{if(e.target===$("sum"))$("sum").close()});
 $("sumform").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,b=$("send");
-  const text=V.map(([id,t,,file],i)=>{const x=fb[id]||{};return `${String(i+1).padStart(2,"0")} ${t}: ${!file?"Coming soon":x.s?ST[x.s]:"Not reviewed"}${x.s==="chg"&&x.note?"\n   "+x.note.replace(/\n/g,"\n   "):""}`}).join("\n");
-  const n=Object.values(fb).filter(x=>x.s==="ok").length,c=Object.values(fb).filter(x=>x.s==="chg").length;
+  const text=V.map((v,i)=>`${String(i+1).padStart(2,"0")} ${v[1]}\n`+FM.map(([k,n])=>{const s=stat(v,k),x=fb[K(v[0],k)]||{};return `   ${n}: ${s[1]}${x.s==="chg"&&x.note?"\n      "+x.note.replace(/\n/g,"\n      "):""}`}).join("\n")).join("\n\n");
+  const vals=Object.values(fb),n=vals.filter(x=>x.s==="ok").length,c=vals.filter(x=>x.s==="chg").length;
   b.disabled=true;b.textContent="Sending…";
   try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
       body:JSON.stringify({access_key:CONFIG.formKey,subject:`${CONFIG.project} · video feedback (${n} approved, ${c} with changes)`,from_name:"Pullman video review page",
