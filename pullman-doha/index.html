@@ -56,7 +56,7 @@ section.cat .ch:hover h2{opacity:.75}
 .ch[aria-expanded="true"] .chev{transform:rotate(-135deg) translate(-2px,-2px)}
 .body{padding:20px 0 34px}
 section.cat .ch h2{font-size:clamp(20px,2.4vw,26px)}
-.area{padding-top:clamp(40px,6vw,72px);scroll-margin-top:60px}.area .label{display:block;padding-bottom:12px;border-bottom:1px solid var(--line);color:var(--ink-strong)}
+.area{padding-top:clamp(48px,7vw,88px);scroll-margin-top:60px}.area .at{font:700 clamp(30px,4.4vw,46px)/1.1 var(--f);letter-spacing:-.02em;color:var(--ink-strong);margin:0}.area .as{margin:6px 0 0;padding-bottom:14px;border-bottom:2px solid var(--ink-strong);color:var(--muted);font-size:15px}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
 .ch h2{font:600 clamp(24px,3vw,32px)/1.15 var(--f);color:var(--ink-strong);margin:0}
 .ch p{margin:4px 0 0;color:var(--muted);font-size:14.5px}
@@ -243,7 +243,7 @@ function render(){
   const areas=[...new Set(cats.map(c=>c[4]))];
   $("chips").innerHTML=areas.map((g,i)=>`<a class="chip" href="#g-${i}" data-chip="${i}">${g}<i></i></a>`).join("");
   let last=null;
-  $("cats").innerHTML=cats.map(([k,n,d,q,g])=>{let head="";if(g!==last){last=g;const i=areas.indexOf(g);head=`<div class="wrap area" id="g-${i}"><span class="label">${g}</span></div>`}
+  $("cats").innerHTML=cats.map(([k,n,d,q,g])=>{let head="";if(g!==last){last=g;const i=areas.indexOf(g);const gc=cats.filter(c=>c[4]===g),gq=gc.reduce((a,c)=>a+c[3],0);head=`<div class="wrap area" id="g-${i}"><h2 class="at">${g}</h2><p class="as">${gc.length>1?gc.length+" sections · ":""}choose ${gq} in total</p></div>`}
     return head+`<section class="cat" id="c-${k}"><div class="wrap">
     <button class="ch" type="button" data-toggle="${k}" aria-expanded="false" aria-controls="b-${k}"><div><h2>${n}</h2><p>${d?d+" · ":""}choose ${q}${PHOTOS[k].length?" of "+PHOTOS[k].length:""}</p></div><span class="cr"><span class="count" data-count="${k}"></span><span class="chev" aria-hidden="true"></span></span></button>
     <div class="body" id="b-${k}" hidden>${PHOTOS[k].length?"":`<p class="soon">Photos coming soon.</p>`}<div class="grid">${PHOTOS[k].map((id,i)=>{const s=(sel[id]&&HAS[id].includes(sel[id].style)&&sel[id].style)||first(id);view[id]=s;return `<div class="card" data-id="${id}" data-cat="${k}">
