@@ -287,17 +287,17 @@ document.addEventListener("click",e=>{
 });
 
 /* lightbox */
-let li=0;
+let li=0,lo=0,hi=0;
 function drawLB(){const[c,id]=list[li];const s=view[id]||first(id);
   $("lbimg").src=src(c,id,s);$("lbimg").alt=`Photo ${id}`;
-  $("lbinfo").textContent=`${CONFIG.categories.find(x=>x[0]===c)[1]} · ${id} · ${countCat(c)}/${quota(c)} selected`;
+  $("lbinfo").textContent=`${CONFIG.categories.find(x=>x[0]===c)[1]} · ${id} · ${li-lo+1} / ${hi-lo+1} · ${countCat(c)}/${quota(c)} selected`;$("lbprev").style.visibility=li>lo?"":"hidden";$("lbnext").style.visibility=li<hi?"":"hidden";
   $("lbseg").innerHTML=segHTML(id,s);
   const on=!!sel[id],full=countCat(c)>=quota(c);
   $("lbpick").textContent=on?`Selected ✓ (${SN[sel[id].style]})`:(full?"Limit reached":`Select ${SN[s]}`);$("lbpick").classList.toggle("on",on);$("lbpick").disabled=!on&&full;
-  [li-1,li+1].forEach(j=>{if(list[j]){const i=new Image();i.src=src(list[j][0],list[j][1],view[list[j][1]]||first(list[j][1]))}});}
-function openLB(i){li=i;drawLB();$("lb").showModal()}
+  [li-1,li+1].forEach(j=>{if(j>=lo&&j<=hi){const i=new Image();i.src=src(list[j][0],list[j][1],view[list[j][1]]||first(list[j][1]))}});}
+function openLB(i){li=i;const c=list[i][0];lo=list.findIndex(x=>x[0]===c);hi=lo+PHOTOS[c].length-1;drawLB();$("lb").showModal()}
 $("lbx").onclick=()=>$("lb").close();
-$("lbprev").onclick=()=>{if(li>0){li--;drawLB()}};$("lbnext").onclick=()=>{if(li<list.length-1){li++;drawLB()}};
+$("lbprev").onclick=()=>{if(li>lo){li--;drawLB()}};$("lbnext").onclick=()=>{if(li<hi){li++;drawLB()}};
 $("lbseg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;setStyle(list[li][1],b.dataset.style);drawLB()});
 $("lbpick").onclick=()=>{toggle(list[li][1],list[li][0]);drawLB()};
 $("lb").addEventListener("keydown",e=>{if(e.key==="ArrowLeft")$("lbprev").click();if(e.key==="ArrowRight")$("lbnext").click()});
