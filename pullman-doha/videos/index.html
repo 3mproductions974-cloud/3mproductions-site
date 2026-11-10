@@ -71,6 +71,12 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .old{font-size:13.5px;line-height:1.5;color:var(--ink);background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
 .old[hidden]{display:none}.old b{display:block;font:500 11.5px/1.4 var(--fm);color:var(--muted);margin-bottom:2px}
 .roinfo{margin:0;font-size:13.5px;color:var(--muted)}.roinfo[hidden],.acts[hidden]{display:none}
+.vbox .play{position:absolute;inset:0;width:100%;border:0;background:transparent;display:grid;place-items:center;cursor:pointer;padding:0}
+.vbox .play i{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);color:#111;display:grid;place-items:center;font-style:normal;font-size:20px;padding-left:4px;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .2s}
+.vbox .play:hover i{transform:scale(1.08)}
+.vbox.on .play{display:none}
+.vc{transition:outline-color .15s,transform .25s,box-shadow .25s}
+@media (hover:hover){.vc:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}}
 .tshint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
@@ -104,7 +110,7 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
   <h1>Video review</h1>
   <p>Here are the room videos, each in landscape (16:9) and vertical (9:16). Watch each one and let us know if it's approved or if you'd like changes.</p>
   <div class="steps">
-    <div><b>1. Watch</b>Play each video. Use full screen and sound for the best view.</div>
+    <div><b>1. Watch</b>Press play to watch each video with sound (on a computer, hover for a quick preview). Full screen gives the best view.</div>
     <div><b>2. Approve or comment</b>For each format, press "Approve", or "Request changes" and tell us what to change, with the time (e.g. 0:23).</div>
     <div><b>3. Send your feedback</b>Your notes save on this device. Press "Review &amp; send" when you're done.</div>
   </div>
@@ -157,7 +163,7 @@ const st={};   // st[id]={f, l}  current format + version label on screen
 V.forEach(v=>{const f=vers(v,"h").length||!vers(v,"v").length?"h":"v";st[v[0]]={f,l:(latest(v,f)||[])[0]}});
 $("all").textContent=V.length*2;
 function boxHTML(v){const s=st[v[0]],a=vers(v,s.f),x=a.find(y=>y[0]===s.l);
-  return x?`<video controls playsinline preload="none"${x[2]?` poster="v/${x[2]}"`:""} src="v/${x[1]}"></video>`:`<div class="ph"><i>▶</i>${s.f==="v"?"9:16 version coming soon":"Video coming soon"}</div>`}
+  return x?`<video playsinline muted loop preload="metadata"${x[2]?` poster="v/${x[2]}"`:""} src="v/${x[1]}"></video><button type="button" class="play" aria-label="Play with sound"><i>▶</i></button>`:`<div class="ph"><i>▶</i>${s.f==="v"?"9:16 version coming soon":"Video coming soon"}</div>`}
 function verHTML(v){const s=st[v[0]],a=vers(v,s.f);if(a.length<2)return a.length?`<span class="vtag">${a[0][0]} · ${a[0][3]}</span>`:"";
   return `<div class="vsel" role="group" aria-label="Version">${a.map((x,i)=>`<button type="button" data-ver="${x[0]}" aria-pressed="${x[0]===s.l}">${x[0]}${i===a.length-1?" · latest":""}</button>`).join("")}</div>`}
 function card(v,i){return `<article class="vc" data-id="${v[0]}">
@@ -187,14 +193,36 @@ function draw(){
     let ex=c.querySelector(".roinfo");if(!ex){ex=document.createElement("p");ex.className="roinfo";c.querySelector(".acts").before(ex)}
     ex.hidden=!ro;ex.textContent=ro?`You're watching an earlier version (${s.l}). Your feedback goes on the latest one.`:""});
   $("done").textContent=V.reduce((n,v)=>n+FM.filter(([f])=>{const L=latest(v,f);return L&&fb[K(v[0],f,L[0])]&&fb[K(v[0],f,L[0])].s}).length,0)}
-function swapBox(c){const v=byId(c.dataset.id);c.querySelector(".vbox").firstElementChild.outerHTML=boxHTML(v)}
+function swapBox(c){const v=byId(c.dataset.id),box=c.querySelector(".vbox"),old=box.querySelector("video");if(old&&old===fullV)fullV=null;box.classList.remove("on");box.querySelectorAll("video,.play,.ph").forEach(n=>n.remove());box.insertAdjacentHTML("afterbegin",boxHTML(v))}
 document.addEventListener("click",e=>{
   const fbn=e.target.closest("[data-fmt]");if(fbn){const c=fbn.closest(".vc"),id=c.dataset.id,f=fbn.dataset.fmt;if(st[id].f===f)return;st[id]={f,l:(latest(byId(id),f)||[])[0]};swapBox(c);draw();return}
   const vb=e.target.closest("[data-ver]");if(vb){const c=vb.closest(".vc");st[c.dataset.id].l=vb.dataset.ver;swapBox(c);draw();return}
   const b=e.target.closest("[data-act]");if(!b)return;const c=b.closest(".vc"),id=c.dataset.id,s=st[id],k=K(id,s.f,s.l);const x=fb[k]||(fb[k]={});
   x.s=x.s===b.dataset.act?undefined:b.dataset.act;if(!x.s&&!x.note)delete fb[k];save();draw();if(x.s==="chg")c.querySelector("textarea").focus()});
 document.addEventListener("input",e=>{const ta=e.target.closest(".vc textarea");if(!ta)return;const id=ta.closest(".vc").dataset.id,s=st[id];(fb[K(id,s.f,s.l)]||(fb[K(id,s.f,s.l)]={})).note=ta.value;save()});
-document.addEventListener("play",e=>{document.querySelectorAll("video").forEach(v=>{if(v!==e.target)v.pause()})},true);
+/* video behaviour, like the main site: hover = silent preview, click = full video with sound */
+const hoverable=matchMedia("(hover:hover) and (pointer:fine)").matches;
+let fullV=null;
+function stopPreview(v){if(v&&!v._full){v.pause();try{v.currentTime=0}catch(e){}}}
+function goFull(v){
+  if(fullV&&fullV!==v)endFull(fullV);
+  document.querySelectorAll(".vbox video").forEach(o=>{if(o!==v)stopPreview(o)});
+  v._full=true;fullV=v;v.loop=false;v.muted=false;v.controls=true;v.closest(".vbox").classList.add("on");
+  try{v.currentTime=0}catch(e){}v.play().catch(()=>{});
+}
+function endFull(v){v._full=false;v.pause();v.controls=false;v.muted=true;v.loop=true;v.closest(".vbox").classList.remove("on");if(fullV===v)fullV=null}
+document.addEventListener("click",e=>{const pb=e.target.closest(".vbox .play");if(pb)goFull(pb.parentElement.querySelector("video"))});
+if(hoverable){
+  document.addEventListener("mouseover",e=>{const box=e.target.closest(".vbox");if(!box||box.contains(e.relatedTarget))return;const v=box.querySelector("video");
+    if(v&&!v._full&&!fullV)v.play().catch(()=>{})});
+  document.addEventListener("mouseout",e=>{const box=e.target.closest(".vbox");if(!box||box.contains(e.relatedTarget))return;stopPreview(box.querySelector("video"))});
+}
+// only one video with sound at a time; a full video that ends goes back to its poster
+document.addEventListener("play",e=>{const v=e.target;if(v._full)document.querySelectorAll(".vbox video").forEach(o=>{if(o!==v){if(o._full)endFull(o);else stopPreview(o)}})},true);
+document.addEventListener("ended",e=>{if(e.target._full){endFull(e.target);try{e.target.currentTime=0}catch(x){}}},true);
+// pause a playing video when it scrolls off screen
+const offIO=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting){const v=en.target.querySelector("video");if(v){if(v._full)endFull(v);else stopPreview(v)}}}),{threshold:0.15});
+const watch=()=>document.querySelectorAll(".vbox").forEach(b=>{if(!b._w){b._w=1;offIO.observe(b)}});watch();
 const ST={ok:"Approved",chg:"Changes requested"};
 const stat=(v,f)=>{const L=latest(v,f);if(!L)return["no","Coming soon",""];const x=fb[K(v[0],f,L[0])]||{};return x.s?[x.s,ST[x.s],L[0]]:["no","Not reviewed",L[0]]};
 $("review").onclick=()=>{const avail=V.reduce((n,v)=>n+FM.filter(([f])=>latest(v,f)).length,0),n=+$("done").textContent;
