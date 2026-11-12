@@ -77,7 +77,8 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .vbox.on .play{display:none}
 .vc{transition:outline-color .15s,transform .25s,box-shadow .25s}
 @media (hover:hover){.vc:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}}
-.tshint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}
+.tshint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}.tshint b{color:var(--ink-strong)}
+@keyframes nudge{0%,100%{transform:scale(1)}30%{transform:scale(1.07);box-shadow:0 0 0 6px color-mix(in srgb,var(--warn) 30%,transparent)}}.btn.nudge{animation:nudge .9s ease 2}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px}
@@ -155,7 +156,7 @@ const CONFIG={
 const FM=[["h","16:9"],["v","9:16"]];
 const KEY="pullman-video-review-v3",$=id=>document.getElementById(id);
 let fb={};try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.fb)fb=s.fb}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify({fb,t:Date.now()}));$("saved").textContent="Saved on this device"}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({fb,t:Date.now()}));$("saved").textContent="Saved on this device · not sent yet"}catch(e){}const r=$("review");r.classList.remove("nudge");void r.offsetWidth;r.classList.add("nudge")}
 const V=CONFIG.videos,byId=id=>V.find(x=>x[0]===id);
 const vers=(v,f)=>v[3][f]||[],latest=(v,f)=>{const a=vers(v,f);return a[a.length-1]};
 const K=(id,f,l)=>`${id}_${f}_${l}`;
@@ -174,7 +175,7 @@ function card(v,i){return `<article class="vc" data-id="${v[0]}">
   <div class="old" hidden></div>
   <div class="acts"><button type="button" class="a-ok" data-act="ok">Approve ✓</button><button type="button" class="a-chg" data-act="chg">Request changes</button></div>
   <textarea placeholder="What should we change? e.g. 0:23 – make the logo smaller" hidden></textarea>
-  <p class="tshint" hidden>Add the time in the video so we know where.</p></div></article>`}
+  <p class="tshint" hidden>Add the time in the video (e.g. 0:23). Your note is saved here: press <b>Review &amp; send</b> at the bottom to send it to us.</p></div></article>`}
 $("vgrid").innerHTML=V.map(card).join("");
 const esc=t=>t.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 function draw(){
@@ -238,9 +239,9 @@ $("sumform").addEventListener("submit",async e=>{e.preventDefault();const f=e.ta
   try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
       body:JSON.stringify({access_key:CONFIG.formKey,subject:`${CONFIG.project} · video feedback (${n} approved, ${c} with changes)`,from_name:"Pullman video review page",
       name:f.elements.namedItem("name").value,email:f.elements.namedItem("email").value,feedback:text})});
-    const j=await r.json();if(!j.success)throw 0;$("msg").textContent="Thank you, your feedback was sent. We'll get back to you with the updated versions.";b.textContent="Sent ✓";
+    const j=await r.json();if(!j.success)throw 0;$("saved").textContent="Sent ✓ "+new Date().toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});$("msg").textContent="Thank you, your feedback was sent. We'll get back to you with the updated versions.";b.textContent="Sent ✓";
   }catch(err){$("msg").textContent="Sending didn't work. Please try again, or email your notes to hello@3mproductions.me.";b.disabled=false;b.textContent="Send feedback"}});
-draw();if(Object.keys(fb).length)$("saved").textContent="Saved on this device";
+draw();if(Object.keys(fb).length)$("saved").textContent="Saved on this device · not sent yet";
 </script>
 </body>
 </html>
