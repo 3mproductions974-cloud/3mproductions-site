@@ -77,6 +77,27 @@ h1{font:600 clamp(36px,6vw,60px)/1.05 var(--f);letter-spacing:-.02em;color:var(-
 .vbox.on .play{display:none}
 .vc{transition:outline-color .15s,transform .25s,box-shadow .25s}
 @media (hover:hover){.vc:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}}
+.cm{display:grid;gap:8px}.cm[hidden]{display:none}
+.cl{display:grid;gap:6px}.cl:empty{display:none}
+.ci{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 10px;font-size:14px;color:var(--ink-strong);line-height:1.45}
+.tc{font:600 12.5px/1 var(--fm);background:var(--warn);color:#fff;border-radius:6px;padding:5px 7px;border:0;margin-top:1px}
+.tc.nt{background:var(--panel-2);color:var(--muted)}
+.ci .x{border:0;background:none;color:var(--muted);font-size:17px;line-height:1;padding:2px 4px}
+.add{display:grid;grid-template-columns:76px 1fr auto;gap:8px}
+.add input{min-width:0;font:inherit;font-size:14.5px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--ink-strong)}
+.add .tin{font:600 14px/1 var(--fm);color:var(--warn);text-align:center;border:1px dashed var(--warn);padding:10px 4px}
+.add .go{border:0;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 16px;font-weight:600;font-size:14px}
+.old .ol{display:block}.old .ol i{font:600 12px/1 var(--fm);font-style:normal;color:var(--warn);margin-right:6px}
+.cm h4,.conv h4{margin:0;font:500 11.5px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.conv{display:grid;gap:8px}.conv[hidden]{display:none}
+.th{background:var(--bg);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.th .row{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:11px 12px;font-size:14px;color:var(--ink-strong);line-height:1.45}
+.th .row+.row{border-top:1px solid var(--line)}
+.th .who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font:500 11.5px/1.5 var(--fm);color:var(--muted);margin-bottom:3px}
+.th .us{background:color-mix(in srgb,var(--ok) 8%,transparent)}
+.av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 10.5px/1 var(--fm);background:var(--panel-2);color:var(--ink-strong)}
+.us .av{background:var(--ink-strong);color:var(--bg)}
+.fx{font:600 10.5px/1 var(--fm);padding:4px 6px;border-radius:6px;background:var(--ok);color:#fff}
 .tshint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}.tshint b{color:var(--ink-strong)}
 @keyframes nudge{0%,100%{transform:scale(1)}30%{transform:scale(1.07);box-shadow:0 0 0 6px color-mix(in srgb,var(--warn) 30%,transparent)}}.btn.nudge{animation:nudge .9s ease 2}
 
@@ -137,9 +158,11 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 <script>
 const CONFIG={
   project:"Pullman Doha",
+  client:"Nadine",
   formKey:"8feec9d0-0083-4321-9d2b-3dac5e731851",
   // [id, title, description, {h: 16:9 versions, v: 9:16 versions}]
-  // each version: [label, file in v/, poster in v/, date]. Oldest first; the last one is shown by default.
+  // each version: [label, file in v/, poster in v/, date, thread]. Oldest first; the last one is shown by default.
+  // thread (V2+ only): client comments on the previous version + our replies: [[seconds or null, client comment, our reply, fixed true/false], ...]
   videos:[
     ["v01","2302 · Executive Premium Deluxe","Empty room",{h:[["V1","v01-hq2.mp4","v01.jpg","10 Nov"]],v:[]}],
     ["v02","2705 · Executive Deluxe Suite","Empty room",{h:[["V1","v02-hq.mp4","v02.jpg","10 Nov"]],v:[]}],
@@ -173,10 +196,15 @@ function card(v,i){return `<article class="vc" data-id="${v[0]}">
   <div class="fsw" role="group" aria-label="Format">${FM.map(([k,n])=>`<button type="button" data-fmt="${k}">${n}</button>`).join("")}</div></div>
   <div class="vrow"></div>
   <div class="old" hidden></div>
+  <div class="conv" hidden></div>
   <div class="acts"><button type="button" class="a-ok" data-act="ok">Approve ✓</button><button type="button" class="a-chg" data-act="chg">Request changes</button></div>
-  <textarea placeholder="What should we change? e.g. 0:23 – make the logo smaller" hidden></textarea>
-  <p class="tshint" hidden>Add the time in the video (e.g. 0:23). Your note is saved here: press <b>Review &amp; send</b> at the bottom to send it to us.</p></div></article>`}
+  <div class="cm" hidden><h4></h4><div class="cl"></div>
+  <form class="add"><input class="tin" inputmode="numeric" value="0:00" aria-label="Time in the video"><input class="ttx" placeholder="What should we change here?" aria-label="Comment"><button class="go" type="submit">Add</button></form></div>
+  <p class="tshint" hidden>Pause the video where you want a change: the time fills in by itself. Add one comment per change, then press <b>Review &amp; send</b> at the bottom.</p></div></article>`}
 $("vgrid").innerHTML=V.map(card).join("");
+const fmt=t=>{t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+":"+String(t%60).padStart(2,"0")};
+const parseT=v=>{const m=String(v).trim().match(/^(\d+)(?:[:.,](\d{1,2}))?$/);if(!m)return null;return m[2]===undefined?+m[1]:(+m[1])*60+(+m[2])};
+const notesOf=x=>{if(!x)return[];if(!x.notes){x.notes=x.note?[[null,x.note]]:[];delete x.note}return x.notes};
 const esc=t=>t.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 function draw(){
   document.querySelectorAll(".vc").forEach(c=>{const id=c.dataset.id,v=byId(id),s=st[id],a=vers(v,s.f),L=latest(v,s.f),isLatest=L&&s.l===L[0],x=fb[K(id,s.f,s.l)]||{};
@@ -185,12 +213,16 @@ function draw(){
     c.querySelector(".vrow").innerHTML=verHTML(v);
     const nw=c.querySelector(".new");nw.hidden=!(a.length>1&&isLatest);nw.textContent=L?`${L[0]} · updated ${L[3]}`:"";
     // notes left on earlier versions of this format
-    const prev=a.slice(0,-1).map(y=>[y[0],fb[K(id,s.f,y[0])]]).filter(([,z])=>z&&z.s==="chg"&&z.note);
-    const old=c.querySelector(".old");old.hidden=!(isLatest&&prev.length);old.innerHTML=prev.map(([l,z])=>`<b>Your notes on ${l}</b>${esc(z.note).replace(/\n/g,"<br>")}`).join("");
+    const prev=a.slice(0,-1).map(y=>[y[0],fb[K(id,s.f,y[0])]]).filter(([,z])=>z&&z.s==="chg"&&notesOf(z).length);
+    const old=c.querySelector(".old");old.hidden=!(isLatest&&prev.length);old.innerHTML=prev.map(([l,z])=>`<b>Your notes on ${l}</b>${notesOf(z).map(([t,n])=>`<span class="ol">${t==null?"":`<i>${fmt(t)}</i>`}${esc(n)}</span>`).join("")}`).join("");
     const ro=!!L&&!isLatest;   // earlier versions are view-only
     c.querySelector(".acts").hidden=ro||!L;c.querySelector(".a-ok").setAttribute("aria-pressed",x.s==="ok");c.querySelector(".a-chg").setAttribute("aria-pressed",x.s==="chg");
     c.querySelectorAll(".acts button").forEach(b=>b.disabled=!L);
-    const ta=c.querySelector("textarea");ta.hidden=ro||x.s!=="chg";ta.readOnly=ro;c.querySelector(".tshint").hidden=ta.hidden;if(document.activeElement!==ta)ta.value=x.note||"";
+    const cur=a.find(y=>y[0]===s.l),thr=(cur&&cur[4])||[],cv=c.querySelector(".conv");cv.hidden=!thr.length;
+    if(thr.length){const pl=a[a.indexOf(cur)-1],pv=pl?pl[0]:"";old.hidden=true;
+      cv.innerHTML=`<h4>Conversation</h4>`+thr.map(([t,q,r,fx])=>`<div class="th"><div class="row"><span class="av">${esc(CONFIG.client[0])}</span><div><span class="who">${t==null?"":`<button type="button" class="tc" data-seek="${t}">${fmt(t)}</button>`}${esc(CONFIG.client)} · on ${pv}</span>${esc(q)}</div></div>${r?`<div class="row us"><span class="av">3M</span><div><span class="who">3MProductions · ${cur[0]}${fx?` <span class="fx">FIXED ✓</span>`:""}</span>${esc(r)}</div></div>`:""}</div>`).join("")}
+    const cm=c.querySelector(".cm");cm.querySelector("h4").textContent=thr.length?`New comments on ${s.l}`:`Your comments · ${notesOf(x).length}`;cm.hidden=ro||x.s!=="chg";c.querySelector(".tshint").hidden=cm.hidden;
+    c.querySelector(".cl").innerHTML=notesOf(x).map(([t,n],i)=>`<div class="ci">${t==null?`<span class="tc nt">–</span>`:`<button type="button" class="tc" data-seek="${t}" title="Go to ${fmt(t)}">${fmt(t)}</button>`}<span>${esc(n)}</span><button type="button" class="x" data-del="${i}" aria-label="Delete comment">×</button></div>`).join("");
     let ex=c.querySelector(".roinfo");if(!ex){ex=document.createElement("p");ex.className="roinfo";c.querySelector(".acts").before(ex)}
     ex.hidden=!ro;ex.textContent=ro?`You're watching an earlier version (${s.l}). Your feedback goes on the latest one.`:""});
   $("done").textContent=V.reduce((n,v)=>n+FM.filter(([f])=>{const L=latest(v,f);return L&&fb[K(v[0],f,L[0])]&&fb[K(v[0],f,L[0])].s}).length,0)}
@@ -199,8 +231,17 @@ document.addEventListener("click",e=>{
   const fbn=e.target.closest("[data-fmt]");if(fbn){const c=fbn.closest(".vc"),id=c.dataset.id,f=fbn.dataset.fmt;if(st[id].f===f)return;st[id]={f,l:(latest(byId(id),f)||[])[0]};swapBox(c);draw();return}
   const vb=e.target.closest("[data-ver]");if(vb){const c=vb.closest(".vc");st[c.dataset.id].l=vb.dataset.ver;swapBox(c);draw();return}
   const b=e.target.closest("[data-act]");if(!b)return;const c=b.closest(".vc"),id=c.dataset.id,s=st[id],k=K(id,s.f,s.l);const x=fb[k]||(fb[k]={});
-  x.s=x.s===b.dataset.act?undefined:b.dataset.act;if(!x.s&&!x.note)delete fb[k];save();draw();if(x.s==="chg")c.querySelector("textarea").focus()});
-document.addEventListener("input",e=>{const ta=e.target.closest(".vc textarea");if(!ta)return;const id=ta.closest(".vc").dataset.id,s=st[id];(fb[K(id,s.f,s.l)]||(fb[K(id,s.f,s.l)]={})).note=ta.value;save()});
+  x.s=x.s===b.dataset.act?undefined:b.dataset.act;if(!x.s&&!notesOf(x).length)delete fb[k];save();draw();if(x.s==="chg")c.querySelector(".ttx").focus()});
+// comments with time
+const cur=c=>{const s=st[c.dataset.id];return fb[K(c.dataset.id,s.f,s.l)]||(fb[K(c.dataset.id,s.f,s.l)]={})};
+document.addEventListener("submit",e=>{const f=e.target.closest(".vc .add");if(!f)return;e.preventDefault();const c=f.closest(".vc"),tx=f.querySelector(".ttx"),ti=f.querySelector(".tin");
+  const txt=tx.value.trim();if(!txt){tx.focus();return}const t=parseT(ti.value);const x=cur(c);notesOf(x).push([t,txt]);x.notes.sort((p,q)=>(p[0]??-1)-(q[0]??-1));x.s="chg";
+  tx.value="";ti.dataset.edited="";save();draw();tx.focus()});
+document.addEventListener("click",e=>{const d=e.target.closest(".vc [data-del]");if(d){const c=d.closest(".vc"),x=cur(c);notesOf(x).splice(+d.dataset.del,1);save();draw();return}
+  const sk=e.target.closest(".vc [data-seek]");if(sk){const v=sk.closest(".vc").querySelector(".vbox video");if(!v)return;const t=+sk.dataset.seek;if(!v._full)goFull(v);
+    const go=()=>{try{v.currentTime=t}catch(x){}};go();setTimeout(go,150);v.closest(".vbox").scrollIntoView({behavior:"smooth",block:"center"})}});
+document.addEventListener("input",e=>{if(e.target.matches(".vc .tin"))e.target.dataset.edited="1"});
+document.addEventListener("timeupdate",e=>{const v=e.target;if(!v._full)return;const ti=v.closest(".vc").querySelector(".tin");if(ti&&!ti.dataset.edited&&document.activeElement!==ti)ti.value=fmt(v.currentTime)},true);
 /* video behaviour, like the main site: hover = silent preview, click = full video with sound */
 const hoverable=matchMedia("(hover:hover) and (pointer:fine)").matches;
 let fullV=null;
@@ -233,7 +274,9 @@ $("review").onclick=()=>{const avail=V.reduce((n,v)=>n+FM.filter(([f])=>latest(v
 $("close").onclick=()=>$("sum").close();
 $("sum").addEventListener("click",e=>{if(e.target===$("sum"))$("sum").close()});
 $("sumform").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,b=$("send");
-  const text=V.map((v,i)=>`${String(i+1).padStart(2,"0")} ${v[1]}\n`+FM.map(([k,n])=>{const s=stat(v,k),x=s[2]?fb[K(v[0],k,s[2])]||{}:{};return `   ${n}${s[2]?" "+s[2]:""}: ${s[1]}${x.s==="chg"&&x.note?"\n      "+x.note.replace(/\n/g,"\n      "):""}`}).join("\n")).join("\n\n");
+  const blocks=[];V.forEach(v=>FM.forEach(([k,n])=>{const s=stat(v,k);if(s[0]!=="chg")return;const ns=notesOf(fb[K(v[0],k,s[2])]);
+    blocks.push(`${v[1]} · ${n} ${s[2]}\n`+(ns.length?ns.map(([t,m])=>`   ${t==null?"  –  ":fmt(t).padStart(5)}  ${m.replace(/\n/g," ")}`).join("\n"):"   (no comment written)"))}));
+  const text=blocks.length?blocks.join("\n\n"):"No changes requested.";
   let n=0,c=0;V.forEach(v=>FM.forEach(([k])=>{const s=stat(v,k);if(s[0]==="ok")n++;if(s[0]==="chg")c++}));
   b.disabled=true;b.textContent="Sending…";
   try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
