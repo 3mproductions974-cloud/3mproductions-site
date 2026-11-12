@@ -134,7 +134,7 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
   <div class="steps">
     <div><b>1. Watch</b>Press play to watch each video with sound (on a computer, hover for a quick preview). Full screen gives the best view.</div>
     <div><b>2. Approve or comment</b>For each format, press "Approve", or "Request changes" and tell us what to change, with the time (e.g. 0:23).</div>
-    <div><b>3. Send your feedback</b>Your notes save on this device. Press "Review &amp; send" when you're done.</div>
+    <div><b>3. Send your feedback</b>Your notes save on this device. Press "Send feedback" at the bottom when you're done.</div>
   </div>
 </div>
 
@@ -142,18 +142,10 @@ dialog::backdrop{background:rgba(10,10,12,.82)}
 
 <div class="bar"><div class="wrap">
   <div class="tot"><b id="done">0</b><span>/ <span id="all">10</span> versions reviewed</span><span class="saved" id="saved"></span></div>
-  <button class="btn" id="review" type="button">Review &amp; send</button>
+  <button class="btn" id="review" type="button">Send feedback</button>
 </div></div>
 
-<dialog id="sum" aria-label="Review your feedback"><form class="sum" id="sumform" method="dialog">
-  <h3>Your feedback</h3>
-  <p class="note" id="sumnote"></p>
-  <div class="rows" id="rows"></div>
-  <label for="f-name">Your name</label><input id="f-name" name="name" required autocomplete="name">
-  <label for="f-email">Your email</label><input id="f-email" name="email" type="email" required autocomplete="email">
-  <div class="acts2"><button class="btn" id="send" type="submit">Send feedback</button><button class="btn ghost" id="close" type="button">Keep reviewing</button></div>
-  <div class="note" id="msg" role="status" style="margin-top:12px;font-size:14px"></div>
-</form></dialog>
+
 
 <script>
 const CONFIG={
@@ -200,7 +192,7 @@ function card(v,i){return `<article class="vc" data-id="${v[0]}">
   <div class="acts"><button type="button" class="a-ok" data-act="ok">Approve ✓</button><button type="button" class="a-chg" data-act="chg">Request changes</button></div>
   <div class="cm" hidden><h4></h4><div class="cl"></div>
   <form class="add"><input class="tin" inputmode="numeric" value="0:00" aria-label="Time in the video"><input class="ttx" placeholder="What should we change here?" aria-label="Comment"><button class="go" type="submit">Add</button></form></div>
-  <p class="tshint" hidden>Pause the video where you want a change: the time fills in by itself. Add one comment per change, then press <b>Review &amp; send</b> at the bottom.</p></div></article>`}
+  <p class="tshint" hidden>Pause the video where you want a change: the time fills in by itself. Add one comment per change, then press <b>Send feedback</b> at the bottom.</p></div></article>`}
 $("vgrid").innerHTML=V.map(card).join("");
 const fmt=t=>{t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+":"+String(t%60).padStart(2,"0")};
 const parseT=v=>{const m=String(v).trim().match(/^(\d+)(?:[:.,](\d{1,2}))?$/);if(!m)return null;return m[2]===undefined?+m[1]:(+m[1])*60+(+m[2])};
@@ -267,23 +259,20 @@ const offIO=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting){
 const watch=()=>document.querySelectorAll(".vbox").forEach(b=>{if(!b._w){b._w=1;offIO.observe(b)}});watch();
 const ST={ok:"Approved",chg:"Changes requested"};
 const stat=(v,f)=>{const L=latest(v,f);if(!L)return["no","Coming soon",""];const x=fb[K(v[0],f,L[0])]||{};return x.s?[x.s,ST[x.s],L[0]]:["no","Not reviewed",L[0]]};
-$("review").onclick=()=>{const avail=V.reduce((n,v)=>n+FM.filter(([f])=>latest(v,f)).length,0),n=+$("done").textContent;
-  $("sumnote").textContent=avail?`You've reviewed ${n} of ${avail} video${avail>1?"s":""} available so far. You can send now and review the rest later.`:"The videos aren't ready yet. We'll let you know as soon as they are.";
-  $("rows").innerHTML=V.map(v=>`<div class="row"><span>${v[1]}</span><span class="fs">${FM.map(([f,n])=>{const s=stat(v,f);return `<b class="${s[0]}">${n}${s[2]?" "+s[2]:""} ${s[1]}</b>`}).join("")}</span></div>`).join("");
-  $("msg").textContent="";$("send").disabled=!avail;$("sum").showModal()};
-$("close").onclick=()=>$("sum").close();
-$("sum").addEventListener("click",e=>{if(e.target===$("sum"))$("sum").close()});
-$("sumform").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,b=$("send");
-  const blocks=[];V.forEach(v=>FM.forEach(([k,n])=>{const s=stat(v,k);if(s[0]!=="chg")return;const ns=notesOf(fb[K(v[0],k,s[2])]);
-    blocks.push(`${v[1]} · ${n} ${s[2]}\n`+(ns.length?ns.map(([t,m])=>`   ${t==null?"  –  ":fmt(t).padStart(5)}  ${m.replace(/\n/g," ")}`).join("\n"):"   (no comment written)"))}));
-  const text=blocks.length?blocks.join("\n\n"):"No changes requested.";
+$("review").onclick=async()=>{const b=$("review");
   let n=0,c=0;V.forEach(v=>FM.forEach(([k])=>{const s=stat(v,k);if(s[0]==="ok")n++;if(s[0]==="chg")c++}));
+  if(!n&&!c){$("saved").textContent="Approve a video or add a comment first.";return}
+  const blocks=[];V.forEach(v=>FM.forEach(([k,nm])=>{const s=stat(v,k);if(s[0]!=="chg")return;const ns=notesOf(fb[K(v[0],k,s[2])]);
+    blocks.push(`${v[1]} · ${nm} ${s[2]}\n`+(ns.length?ns.map(([t,m])=>`   ${t==null?"  –  ":fmt(t).padStart(5)}  ${m.replace(/\n/g," ")}`).join("\n"):"   (no comment written)"))}));
+  const appr=[];V.forEach(v=>FM.forEach(([k,nm])=>{const s=stat(v,k);if(s[0]==="ok")appr.push(`${v[1]} · ${nm} ${s[2]}`)}));
   b.disabled=true;b.textContent="Sending…";
   try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
-      body:JSON.stringify({access_key:CONFIG.formKey,subject:`${CONFIG.project} · video feedback (${n} approved, ${c} with changes)`,from_name:"Pullman video review page",
-      name:f.elements.namedItem("name").value,email:f.elements.namedItem("email").value,feedback:text})});
-    const j=await r.json();if(!j.success)throw 0;$("saved").textContent="Sent ✓ "+new Date().toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});$("msg").textContent="Thank you, your feedback was sent. We'll get back to you with the updated versions.";b.textContent="Sent ✓";
-  }catch(err){$("msg").textContent="Sending didn't work. Please try again, or email your notes to hello@3mproductions.me.";b.disabled=false;b.textContent="Send feedback"}});
+      body:JSON.stringify({access_key:CONFIG.formKey,subject:`${CONFIG.project} · video feedback (${c} with changes${n?`, ${n} approved`:""})`,from_name:"Pullman video review page",
+      name:CONFIG.client,changes:blocks.length?blocks.join("\n\n"):"None"})});
+    const j=await r.json();if(!j.success)throw 0;
+    $("saved").textContent="Sent ✓ "+new Date().toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+" · thank you!";b.textContent="Sent ✓";
+    setTimeout(()=>{b.disabled=false;b.textContent="Send feedback"},4000);
+  }catch(err){$("saved").textContent="Sending didn't work. Please try again.";b.disabled=false;b.textContent="Send feedback"}};
 draw();if(Object.keys(fb).length)$("saved").textContent="Saved on this device · not sent yet";
 </script>
 </body>
